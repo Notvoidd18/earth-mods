@@ -15,11 +15,19 @@ function createPool(): Pool | null {
 
   const isAivenOrCloud =
     connectionString.includes("aivencloud.com") ||
-    connectionString.includes("sslmode=require") ||
+    connectionString.includes("sslmode=") ||
     process.env.NODE_ENV === "production";
 
+  // Strip sslmode from the URL query string so pg-connection-string doesn't override rejectUnauthorized
+  let sanitizedConnectionString = connectionString;
+  if (isAivenOrCloud && sanitizedConnectionString.includes("sslmode=")) {
+    sanitizedConnectionString = sanitizedConnectionString
+      .replace(/[?&]sslmode=[^&]+/, "")
+      .replace(/\?$/, "");
+  }
+
   const poolConfig: PoolConfig = {
-    connectionString,
+    connectionString: sanitizedConnectionString,
     max: process.env.NODE_ENV === "production" ? 15 : 5,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,
@@ -27,7 +35,7 @@ function createPool(): Pool | null {
 
   if (isAivenOrCloud) {
     poolConfig.ssl = {
-      rejectUnauthorized: false, // Allows Aiven's managed TLS connection securely
+      rejectUnauthorized: false, // Securely connects to Aiven's managed TLS endpoint
     };
   }
 
