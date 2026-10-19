@@ -12,8 +12,6 @@ import {
   Loader2,
   Trash2,
   Sparkles,
-  ShieldCheck,
-  Globe2,
 } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 import { CategoryBadge } from "./CategoryBadge";

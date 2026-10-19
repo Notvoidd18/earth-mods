@@ -1,4 +1,4 @@
-import { Globe2, ShieldCheck, Lock, Sparkles, AlertCircle, CheckCircle } from "lucide-react";
+import { Globe2, ShieldCheck, Lock, Sparkles, CheckCircle } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {

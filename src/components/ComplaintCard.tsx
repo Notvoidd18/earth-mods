@@ -5,7 +5,7 @@ import { CategoryBadge } from "./CategoryBadge";
 import { StatusBadge } from "./StatusBadge";
 import { VoteButtons } from "./VoteButtons";
 import { ReportModal } from "./ReportModal";
-import { Share2, Check, Sparkles, MessageCircle } from "lucide-react";
+import { Share2, Check, Sparkles } from "lucide-react";
 import { useState } from "react";
 
 export interface ComplaintCardData {

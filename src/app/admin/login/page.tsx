@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Globe2, ShieldAlert, Loader2, ArrowLeft } from "lucide-react";
+import { Lock, ShieldAlert, Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminLoginPage() {

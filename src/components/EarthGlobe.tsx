@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Sparkles, Bug, Compass, AlertCircle } from "lucide-react";
+import { Bug, Compass } from "lucide-react";
 
 export function EarthGlobe() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -107,7 +107,6 @@ export function EarthGlobe() {
       for (let lon = 0; lon < 360; lon += 45) {
         const radLon = ((lon * Math.PI) / 180) + currentAngle;
         const cosLon = Math.cos(radLon);
-        const sinLon = Math.sin(radLon);
 
         if (cosLon > -0.2) {
           ctx.beginPath();

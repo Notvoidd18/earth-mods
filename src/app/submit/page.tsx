@@ -5,14 +5,11 @@ import { useRouter } from "next/navigation";
 import { CATEGORIES, ComplaintCategory } from "@/lib/db/schema";
 import { CATEGORY_METADATA } from "@/components/CategoryBadge";
 import {
-  FilePlus2,
   AlertTriangle,
   Loader2,
-  Lock,
   UserCheck,
   Sparkles,
   Send,
-  HelpCircle,
 } from "lucide-react";
 
 export default function SubmitComplaintPage() {

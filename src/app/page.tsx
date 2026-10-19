@@ -6,14 +6,12 @@ import { EarthGlobe } from "@/components/EarthGlobe";
 import { eq, and, or, ilike, desc, sql } from "drizzle-orm";
 import Link from "next/link";
 import {
-  FileText,
   AlertCircle,
   PlusCircle,
   ChevronLeft,
   ChevronRight,
   Sparkles,
   Bug,
-  Activity,
   Flame,
 } from "lucide-react";
 

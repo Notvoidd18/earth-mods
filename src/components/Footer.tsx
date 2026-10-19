@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Globe2, Heart, Sparkles, Activity } from "lucide-react";
+import { Globe2, Activity } from "lucide-react";
 
 export function Footer() {
   return (

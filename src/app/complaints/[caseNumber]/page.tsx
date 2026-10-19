@@ -13,7 +13,6 @@ import {
   ArrowLeft,
   Sparkles,
   Globe2,
-  Check,
 } from "lucide-react";
 import type { Metadata } from "next";
 
