@@ -9,42 +9,32 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        institutional: {
-          50: "#f4f7f5",
-          100: "#e4ece7",
-          200: "#c7d9ce",
-          300: "#9fbeaf",
-          400: "#719d8b",
-          500: "#4e806e",
-          600: "#3b6757",
-          700: "#2f5246",
-          800: "#274239",
-          900: "#182b24",
-          950: "#0c1713",
-        },
-        parchment: {
-          50: "#fbfaf7",
-          100: "#f5f3ec",
-          200: "#eae5d7",
-          300: "#dbd1be",
-          400: "#c6b79f",
-          500: "#b4a185",
-          900: "#2a2620",
-        },
-        gold: {
-          400: "#d4b36a",
-          500: "#b8974a",
-          600: "#967833",
-          700: "#755c24",
-        },
-        seal: {
-          600: "#9e2a2b",
-          700: "#7f1d1d",
-          800: "#541313",
+        brand: {
+          50: "#ecfdf5",
+          100: "#d1fae5",
+          200: "#a7f3d0",
+          300: "#6ee7b7",
+          400: "#34d399",
+          500: "#10b981", // vibrant emerald green
+          600: "#059669",
+          700: "#047857",
+          800: "#065f46",
+          900: "#064e3b",
+          950: "#022c22",
+          dark: "#031710", // ultra deep liquid green background
         },
       },
       fontFamily: {
-        serif: ["Georgia", "Cambria", "'Times New Roman'", "Times", "serif"],
+        sans: [
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "'Segoe UI'",
+          "Roboto",
+          "Inter",
+          "Helvetica",
+          "Arial",
+          "sans-serif",
+        ],
         mono: [
           "ui-monospace",
           "SFMono-Regular",
@@ -54,20 +44,29 @@ const config: Config = {
           "'Courier New'",
           "monospace",
         ],
-        sans: [
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "'Segoe UI'",
-          "Roboto",
-          "Helvetica",
-          "Arial",
-          "sans-serif",
-        ],
       },
       boxShadow: {
-        subtle: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-        card: "0 2px 4px 0 rgba(18, 43, 28, 0.06), 0 1px 2px 0 rgba(18, 43, 28, 0.04)",
-        docket: "0 4px 12px -2px rgba(18, 43, 28, 0.12), 0 2px 6px -1px rgba(18, 43, 28, 0.08)",
+        glass: "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
+        "glass-sm": "0 4px 16px 0 rgba(0, 0, 0, 0.25)",
+        "glass-hover": "0 12px 40px 0 rgba(16, 185, 129, 0.25)",
+        "liquid-glow": "0 0 50px -10px rgba(16, 185, 129, 0.5)",
+        "liquid-emerald": "0 0 30px rgba(52, 211, 153, 0.35)",
+      },
+      animation: {
+        "float-slow": "float 8s ease-in-out infinite",
+        "float-reverse": "floatReverse 10s ease-in-out infinite",
+        "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "spin-slow": "spin 25s linear infinite",
+      },
+      keyframes: {
+        float: {
+          "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
+          "50%": { transform: "translateY(-16px) rotate(2deg)" },
+        },
+        floatReverse: {
+          "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
+          "50%": { transform: "translateY(16px) rotate(-2deg)" },
+        },
       },
     },
   },

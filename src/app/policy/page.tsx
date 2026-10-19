@@ -1,111 +1,97 @@
-import { Scale, ShieldAlert, Lock, BookOpen, CheckCircle } from "lucide-react";
+import { Globe2, ShieldCheck, Lock, Sparkles, AlertCircle, CheckCircle } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Directorate Charter & Privacy Disclosures | EARTH MODS",
-  description:
-    "Official charter, satirical disclaimers, moderation guidelines, and cryptographic privacy disclosures of the Earth Directorate.",
+  title: "Terms of Living on Earth | EARTH MODS",
+  description: "Official rules, satirical disclaimer, and privacy notes for Earth beta testers.",
 };
 
 export default function PolicyPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      {/* Title */}
-      <div className="border-b-2 border-institutional-900 pb-4">
-        <div className="flex items-center space-x-2 text-xs font-mono uppercase text-gold-600 font-bold tracking-wider mb-1">
-          <BookOpen className="w-4 h-4" />
-          <span>Directive Codex 00-ALPHA</span>
+      {/* Page Title */}
+      <div className="text-center space-y-3">
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-mono font-semibold">
+          <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+          <span>User Agreement • Revision 2026</span>
         </div>
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-institutional-950">
-          Directorate Charter & Technical Disclosures
+        <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+          Terms of Living on <span className="text-emerald-400">Earth</span>
         </h1>
-        <p className="text-xs sm:text-sm text-stone-600 mt-1">
-          Standard operational parameters governing the fictional planetary complaints registry.
+        <p className="text-white/70 text-xs sm:text-sm max-w-lg mx-auto leading-relaxed">
+          The basic rules, privacy notes, and satirical disclaimers you agreed to simply by spawning here.
         </p>
       </div>
 
-      <div className="space-y-6 text-stone-800 text-sm leading-relaxed">
-        {/* Satirical Nature */}
-        <section className="bg-white border border-parchment-300 rounded p-6 shadow-subtle space-y-3">
-          <div className="flex items-center space-x-2 text-institutional-950">
-            <Scale className="w-5 h-5 text-gold-600" />
-            <h2 className="font-serif font-bold text-lg">1. Institutional Satire & Jurisdiction</h2>
+      <div className="space-y-6 text-white/80 text-sm leading-relaxed">
+        {/* Satire Clause */}
+        <section className="glass-panel-strong rounded-3xl p-6 sm:p-8 border border-white/20 shadow-xl space-y-3">
+          <div className="flex items-center space-x-2 text-white">
+            <Globe2 className="w-5 h-5 text-emerald-400" />
+            <h2 className="font-bold text-lg">1. Satirical Disclaimer (You Cannot Sue Gravity)</h2>
           </div>
           <p>
-            <strong>EARTH MODS</strong> is an artistic, satirical web portal simulating a fictional planetary
-            government authority. It is designed to humorously address everyday human grievances—such as
-            biological quirks, atmospheric instability, sleep mechanics, and gravitational constants.
+            <strong>EARTH MODS</strong> is an artistic comedy portal simulating a customer support ticket
+            desk for the planet. It is not affiliated with any real country, government agency, or cosmic creator.
           </p>
-          <div className="p-3 bg-amber-50 border border-amber-200 rounded text-xs text-amber-900">
-            <strong>Legal Non-Affiliation:</strong> This service possesses zero sovereign, geopolitical, or
-            intergovernmental authority. It does not replace real-world emergency services, civil courts, or
-            statutory ombudsman offices.
+          <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-400/30 text-xs text-emerald-200">
+            <strong>Important Notice:</strong> Filing a complaint about rain ruining your barbecue will not
+            actually stop the rain. If you drop your sandwich butter-side down, that is table physics, not a legal dispute.
           </div>
         </section>
 
-        {/* Privacy & Cryptography */}
-        <section className="bg-white border border-parchment-300 rounded p-6 shadow-subtle space-y-3">
-          <div className="flex items-center space-x-2 text-institutional-950">
-            <Lock className="w-5 h-5 text-gold-600" />
-            <h2 className="font-serif font-bold text-lg">2. Privacy Notice & Token Hashing</h2>
+        {/* Privacy */}
+        <section className="glass-panel-strong rounded-3xl p-6 sm:p-8 border border-white/20 shadow-xl space-y-3">
+          <div className="flex items-center space-x-2 text-white">
+            <Lock className="w-5 h-5 text-emerald-400" />
+            <h2 className="font-bold text-lg">2. Privacy & Technical Data</h2>
           </div>
           <p>
-            The Directorate respects citizen privacy while defending the integrity of the public docket:
+            We take your privacy seriously while keeping spammers from breaking the docket:
           </p>
-          <ul className="list-disc pl-5 space-y-1 text-xs">
+          <ul className="list-disc pl-5 space-y-2 text-xs text-white/70">
             <li>
-              <strong>No Permanent Raw IP Storage:</strong> We do not write raw internet protocol (IP)
-              addresses to persistent database tables.
+              <strong>No Permanent IP Storage:</strong> We never save your raw IP address in permanent database tables.
             </li>
             <li>
-              <strong>Cryptographic Voter Tokens:</strong> When you cast an endorsement or file a docket, a
-              random voter identifier is issued via an <code className="font-mono bg-stone-100 px-1 py-0.5 rounded">HttpOnly</code>,{" "}
-              <code className="font-mono bg-stone-100 px-1 py-0.5 rounded">SameSite=Lax</code> cookie.
+              <strong>Hashed Voter Tokens:</strong> When you upvote or downvote, your browser gets a secure random token that is hashed using SHA-256 with a private server salt. This ensures 1 vote per human per bug.
             </li>
             <li>
-              <strong>Server-Side Salted Hashes:</strong> Before storage, this token is passed through a SHA-256
-              hashing algorithm alongside a private server secret (<code className="font-mono bg-stone-100 px-1 py-0.5 rounded">VOTER_SALT</code>).
-              This guarantees that unique votes can be deduplicated without cross-referencing your device across external networks.
-            </li>
-            <li>
-              <strong>Anonymous Mode:</strong> Selecting &ldquo;File as Anonymous Citizen&rdquo; strips all display names
-              from public case records.
+              <strong>Anonymous Mode:</strong> If you select Anonymous, your name is completely omitted from the case file.
             </li>
           </ul>
         </section>
 
-        {/* Moderation Policy */}
-        <section className="bg-white border border-parchment-300 rounded p-6 shadow-subtle space-y-3">
-          <div className="flex items-center space-x-2 text-institutional-950">
-            <ShieldAlert className="w-5 h-5 text-seal-600" />
-            <h2 className="font-serif font-bold text-lg">3. Moderation & Content Boundaries</h2>
+        {/* What Can Be Reported */}
+        <section className="glass-panel-strong rounded-3xl p-6 sm:p-8 border border-white/20 shadow-xl space-y-3">
+          <div className="flex items-center space-x-2 text-white">
+            <ShieldCheck className="w-5 h-5 text-emerald-400" />
+            <h2 className="font-bold text-lg">3. What You Can & Cannot Report</h2>
           </div>
-          <p>
-            To maintain the satirical integrity and community safety of the planetary registry, the
-            following entries will be summarily dismissed or purged by Directorate Archons:
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
-            <div className="border border-stone-200 rounded p-3 bg-stone-50">
-              <span className="font-bold text-seal-700 block mb-1">❌ Prohibited Material</span>
-              Targeted harassment, hate speech, threats of violence, commercial advertisements, and partisan
-              real-world political campaigns.
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-1">
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+              <span className="font-bold text-emerald-400 block text-sm">✅ Approved Bug Reports</span>
+              <p className="text-white/70">
+                Biological quirks (hiccups, lower back pain, wisdom teeth), physics weirdness (toast mechanics, static electricity), mosquito spawn rates, excessive humidity, and Monday time dilation.
+              </p>
             </div>
-            <div className="border border-stone-200 rounded p-3 bg-stone-50">
-              <span className="font-bold text-emerald-700 block mb-1">✅ Approved Material</span>
-              Complaints regarding biological design errors, physics engine inconsistencies, thermodynamic
-              imbalance, insect balancing, and scheduling quirks.
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1.5">
+              <span className="font-bold text-rose-400 block text-sm">❌ Prohibited Submissions</span>
+              <p className="text-white/70">
+                Real-world partisan political arguments, commercial spam, hate speech, and harassment against real individuals. These will be swiftly deleted by our moderators.
+              </p>
             </div>
           </div>
         </section>
 
-        {/* Return to Action */}
+        {/* CTA */}
         <div className="text-center pt-4">
           <Link
             href="/submit"
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded bg-gold-600 hover:bg-gold-500 text-institutional-950 font-serif font-bold text-sm shadow transition-colors"
+            className="liquid-btn inline-flex items-center gap-2 px-8 py-3 rounded-2xl font-bold text-sm shadow-xl"
           >
-            <CheckCircle className="w-4 h-4 text-institutional-950" />
-            <span>I Understand — Lodge a Complaint</span>
+            <CheckCircle className="w-5 h-5" />
+            <span>I Understand • Report a Planetary Bug</span>
           </Link>
         </div>
       </div>

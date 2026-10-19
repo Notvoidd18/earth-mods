@@ -1,17 +1,17 @@
-import { Scale } from "lucide-react";
+import { Globe2 } from "lucide-react";
 
 export default function Loading() {
   return (
-    <div className="py-24 text-center space-y-4">
-      <div className="w-12 h-12 rounded border-2 border-gold-500 bg-institutional-900 flex items-center justify-center mx-auto shadow animate-pulse">
-        <Scale className="w-6 h-6 text-gold-400" />
+    <div className="py-28 text-center space-y-4">
+      <div className="w-14 h-14 rounded-2xl glass-panel flex items-center justify-center mx-auto border border-emerald-400/40 shadow-liquid-emerald animate-pulse">
+        <Globe2 className="w-7 h-7 text-emerald-400 animate-spin-slow" />
       </div>
       <div className="space-y-1">
-        <h2 className="font-serif font-bold text-base text-institutional-950">
-          Consulting Planetary Archives
+        <h2 className="font-bold text-base text-white">
+          Fetching Earth Dockets...
         </h2>
-        <p className="text-xs font-mono text-stone-500">
-          Retrieving official regulatory dockets from Aiven PostgreSQL vault...
+        <p className="text-xs font-mono text-emerald-300/80">
+          Syncing with Aiven PostgreSQL planetary vault...
         </p>
       </div>
     </div>

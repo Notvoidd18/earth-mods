@@ -8,14 +8,12 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { VoteButtons } from "@/components/VoteButtons";
 import { ReportModal } from "@/components/ReportModal";
 import {
-  FileText,
   Calendar,
   User,
-  ShieldAlert,
   ArrowLeft,
-  Share2,
-  Printer,
-  Scale,
+  Sparkles,
+  Globe2,
+  Check,
 } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -30,7 +28,7 @@ interface CasePageProps {
 export async function generateMetadata({ params }: CasePageProps): Promise<Metadata> {
   const { caseNumber } = await params;
   if (!db) {
-    return { title: `Case ${caseNumber} | EARTH MODS` };
+    return { title: `Bug Case ${caseNumber} | EARTH MODS` };
   }
 
   const [item] = await db
@@ -43,12 +41,12 @@ export async function generateMetadata({ params }: CasePageProps): Promise<Metad
     .limit(1);
 
   if (!item) {
-    return { title: `Case Not Found | EARTH MODS` };
+    return { title: `Bug Not Found | EARTH MODS` };
   }
 
   return {
-    title: `Docket [${item.caseNumber}]: ${item.title} | EARTH MODS`,
-    description: `Official planetary grievance docket ${item.caseNumber}. Read citizen testimony, vote on planetary balancing, and inspect official directorate verdicts.`,
+    title: `[${item.caseNumber}] ${item.title} | EARTH MODS`,
+    description: `Official Earth bug docket ${item.caseNumber}. Read citizen testimony and vote on this planetary bug.`,
   };
 }
 
@@ -57,7 +55,7 @@ export default async function ComplaintDetailPage({ params }: CasePageProps) {
 
   if (!db) {
     return (
-      <div className="py-12 text-center text-xs font-mono text-stone-600">
+      <div className="py-12 text-center text-xs font-mono text-emerald-300">
         Database connection required to resolve docket records.
       </div>
     );
@@ -89,43 +87,47 @@ export default async function ComplaintDetailPage({ params }: CasePageProps) {
     : null;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      {/* Back to feed navigation */}
+    <div className="max-w-4xl mx-auto space-y-6">
+      {/* Back button */}
       <div className="flex items-center justify-between">
         <Link
           href="/"
-          className="text-xs font-mono text-stone-600 hover:text-institutional-950 flex items-center gap-1.5 transition-colors"
+          className="text-xs font-mono text-emerald-300 hover:text-white flex items-center gap-1.5 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Return to Public Docket Index</span>
+          <span>Back to All Earth Bugs</span>
         </Link>
-        <div className="text-xs font-mono text-stone-400">
-          Permanent Ledger Record #{caseRecord.caseNumber}
+        <div className="text-xs font-mono text-white/50">
+          Earth Docket #{caseRecord.caseNumber}
         </div>
       </div>
 
-      {/* Main Official Case Docket */}
-      <article className="bg-white border-2 border-institutional-900 rounded shadow-docket overflow-hidden">
-        {/* Institutional Header Banner */}
-        <div className="bg-institutional-950 text-parchment-100 p-6 border-b border-institutional-800 flex flex-wrap items-center justify-between gap-4">
+      {/* Main Glassmorphic Case Docket */}
+      <article className="glass-panel-strong rounded-3xl border border-white/20 shadow-2xl overflow-hidden relative">
+        {/* Liquid background glow */}
+        <div className="liquid-glow-sphere -top-20 -right-20 w-80 h-80 bg-emerald-500/20" />
+        <div className="liquid-glow-sphere -bottom-20 -left-20 w-80 h-80 bg-emerald-400/20" />
+
+        {/* Top Header Strip */}
+        <div className="p-6 sm:p-8 border-b border-white/10 flex flex-wrap items-center justify-between gap-4 relative z-10">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-xs uppercase px-2 py-0.5 rounded bg-gold-500/20 text-gold-400 border border-gold-500/30">
+              <span className="font-mono text-xs uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">
                 OFFICIAL RECORD
               </span>
-              <span className="font-mono text-xs text-parchment-400">DOCKET ID:</span>
-              <span className="font-mono font-bold text-sm text-parchment-50">
+              <span className="font-mono text-xs text-white/50">CASE ID:</span>
+              <span className="font-mono font-bold text-sm text-white">
                 {caseRecord.caseNumber}
               </span>
             </div>
-            <div className="flex items-center gap-3 text-xs text-parchment-300 font-mono">
+            <div className="flex items-center gap-3 text-xs text-white/70 font-mono">
               <span className="flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5 text-gold-400" />
+                <Calendar className="w-3.5 h-3.5 text-emerald-400" />
                 {formattedDate}
               </span>
               <span>•</span>
               <span className="flex items-center gap-1">
-                <User className="w-3.5 h-3.5 text-gold-400" />
+                <User className="w-3.5 h-3.5 text-emerald-400" />
                 {caseRecord.isAnonymous || !caseRecord.authorName
                   ? "Anonymous Citizen"
                   : caseRecord.authorName}
@@ -138,22 +140,20 @@ export default async function ComplaintDetailPage({ params }: CasePageProps) {
           </div>
         </div>
 
-        {/* Docket Meta Strip */}
-        <div className="bg-parchment-100 border-b border-parchment-200 px-6 py-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+        {/* Sub-bar: Category & Report */}
+        <div className="px-6 sm:px-8 py-3 bg-white/5 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs relative z-10">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-stone-500 uppercase font-semibold">Jurisdiction:</span>
+            <span className="font-mono text-white/50">Category:</span>
             <CategoryBadge category={caseRecord.category} size="md" />
           </div>
 
-          <div className="flex items-center space-x-4">
-            <ReportModal complaintId={caseRecord.id} caseNumber={caseRecord.caseNumber} />
-          </div>
+          <ReportModal complaintId={caseRecord.id} caseNumber={caseRecord.caseNumber} />
         </div>
 
         {/* Docket Body */}
-        <div className="p-6 sm:p-8 space-y-6">
+        <div className="p-6 sm:p-8 space-y-6 relative z-10">
           <div className="flex flex-col md:flex-row md:items-start gap-6">
-            {/* Voting Controls */}
+            {/* Voting Component */}
             <div className="shrink-0 flex justify-center md:block">
               <VoteButtons
                 complaintId={caseRecord.id}
@@ -164,63 +164,65 @@ export default async function ComplaintDetailPage({ params }: CasePageProps) {
               />
             </div>
 
-            {/* Grievance Narrative */}
+            {/* Narrative */}
             <div className="flex-1 space-y-4">
-              <h1 className="font-serif text-2xl sm:text-3xl font-bold text-institutional-950 leading-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
                 {caseRecord.title}
               </h1>
 
-              <div className="prose prose-stone max-w-none text-stone-800 text-sm sm:text-base leading-relaxed whitespace-pre-line border-t border-parchment-200 pt-4">
+              <div className="text-white/80 text-sm sm:text-base leading-relaxed whitespace-pre-line border-t border-white/10 pt-4">
                 {caseRecord.description}
               </div>
             </div>
           </div>
 
-          {/* Official Directorate Verdict Decree (If applicable) */}
+          {/* Official Moderator Response Box */}
           {caseRecord.verdict && (
-            <div className="mt-8 rounded border-2 border-gold-500 bg-parchment-50 p-6 shadow-inner space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gold-400/50 pb-2">
+            <div className="mt-8 rounded-2xl glass-panel p-6 border border-emerald-400/40 bg-emerald-950/60 shadow-liquid-glow space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-emerald-400/20 pb-2">
                 <div className="flex items-center space-x-2">
-                  <Scale className="w-5 h-5 text-gold-600" />
-                  <span className="font-serif font-bold text-base text-institutional-950 uppercase tracking-wide">
-                    Official Directorate Adjudication & Verdict
+                  <Sparkles className="w-5 h-5 text-emerald-400" />
+                  <span className="font-bold text-base text-white">
+                    Official Earth Dev Team Response
                   </span>
                 </div>
                 {caseRecord.status === "CANONIZED" && (
-                  <span className="canon-stamp text-xs">Canonized in Lore</span>
+                  <span className="font-mono text-xs uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">
+                    Canonized in Lore
+                  </span>
                 )}
                 {caseRecord.status === "RESOLVED" && (
-                  <span className="seal-stamp text-xs">Patch Applied</span>
+                  <span className="font-mono text-xs uppercase px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-400/40">
+                    Patch Scheduled
+                  </span>
                 )}
               </div>
 
-              <blockquote className="italic font-serif text-sm sm:text-base text-institutional-900 leading-relaxed pl-2 border-l-2 border-gold-400">
+              <blockquote className="italic text-sm sm:text-base text-emerald-100 leading-relaxed pl-2 border-l-2 border-emerald-400">
                 &ldquo;{caseRecord.verdict}&rdquo;
               </blockquote>
 
-              <div className="pt-2 flex flex-wrap items-center justify-between text-xs font-mono text-stone-600 border-t border-parchment-200">
+              <div className="pt-2 flex flex-wrap items-center justify-between text-xs font-mono text-white/60 border-t border-white/10">
                 <span>
-                  Adjudicated by:{" "}
-                  <strong className="text-institutional-900 font-semibold">
-                    {caseRecord.verdictBy || "High Directorate Tribunal"}
+                  Answered by:{" "}
+                  <strong className="text-emerald-300 font-semibold">
+                    {caseRecord.verdictBy || "Earth Directorate"}
                   </strong>
                 </span>
                 {verdictFormattedDate && (
-                  <span>Resolution Date: {verdictFormattedDate}</span>
+                  <span>Decision Date: {verdictFormattedDate}</span>
                 )}
               </div>
             </div>
           )}
         </div>
 
-        {/* Footer Docket Legalities */}
-        <div className="bg-parchment-100 border-t border-parchment-200 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-stone-500">
-          <div>
-            Case ID: <span className="font-bold text-stone-800">{caseRecord.caseNumber}</span> |
-            System Hash Checksum: Verified
-          </div>
-          <div className="flex items-center space-x-3">
-            <span className="text-stone-400">Directive 404-TERRA</span>
+        {/* Footer Meta */}
+        <div className="px-6 sm:px-8 py-4 bg-white/5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-white/50 relative z-10">
+          <div>Verified Docket #{caseRecord.caseNumber} • Sol-3 Planetary Helpdesk</div>
+          <div className="flex items-center gap-1.5 text-emerald-400/80">
+            <Globe2 className="w-3.5 h-3.5" />
+            <span>Earth Rotation: 1.000 Rev / Day</span>
           </div>
         </div>
       </article>

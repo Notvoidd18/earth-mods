@@ -14,39 +14,39 @@ export const CATEGORY_METADATA: Record<
   { label: string; icon: typeof Compass; colorClass: string }
 > = {
   PHYSICS_GRAVITY: {
-    label: "Physics & Gravitation",
+    label: "Gravity & Physics Engine",
     icon: Compass,
-    colorClass: "bg-blue-50 text-blue-900 border-blue-200",
+    colorClass: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
   },
   ATMOSPHERE_WEATHER: {
-    label: "Atmosphere & Weather",
+    label: "Weather & Sky Bugs",
     icon: CloudRain,
-    colorClass: "bg-cyan-50 text-cyan-900 border-cyan-200",
+    colorClass: "bg-teal-500/15 text-teal-200 border-teal-400/30",
   },
   FLORA_FAUNA: {
-    label: "Flora & Fauna Design",
+    label: "Animal & Insect Nerfs",
     icon: Bug,
-    colorClass: "bg-emerald-50 text-emerald-900 border-emerald-200",
+    colorClass: "bg-emerald-400/15 text-emerald-200 border-emerald-300/30",
   },
   HUMAN_BIOLOGY: {
-    label: "Human Biology & Ergonomics",
+    label: "Human Body Glitches",
     icon: Activity,
-    colorClass: "bg-amber-50 text-amber-900 border-amber-200",
+    colorClass: "bg-white/10 text-white border-white/20",
   },
   TEMPORAL_MECHANICS: {
-    label: "Temporal Mechanics",
+    label: "Time & Monday Lag",
     icon: Hourglass,
-    colorClass: "bg-purple-50 text-purple-900 border-purple-200",
+    colorClass: "bg-emerald-500/20 text-emerald-200 border-emerald-400/30",
   },
   PLANETARY_INFRASTRUCTURE: {
-    label: "Planetary Infrastructure",
+    label: "Oceans & Crust Layout",
     icon: Layers,
-    colorClass: "bg-stone-100 text-stone-900 border-stone-300",
+    colorClass: "bg-white/10 text-emerald-300 border-emerald-500/20",
   },
   EXISTENTIAL_METAGAME: {
-    label: "Existential Metagame",
+    label: "Sleep & Simulation Quirks",
     icon: HelpCircle,
-    colorClass: "bg-rose-50 text-rose-900 border-rose-200",
+    colorClass: "bg-emerald-600/20 text-white border-white/20",
   },
 };
 
@@ -60,7 +60,7 @@ export function CategoryBadge({ category, size = "md" }: CategoryBadgeProps) {
     CATEGORY_METADATA[category as ComplaintCategory] || {
       label: category,
       icon: HelpCircle,
-      colorClass: "bg-gray-50 text-gray-800 border-gray-200",
+      colorClass: "bg-white/10 text-white border-white/20",
     };
 
   const Icon = meta.icon;
@@ -68,8 +68,8 @@ export function CategoryBadge({ category, size = "md" }: CategoryBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1 font-mono uppercase tracking-wider rounded border ${meta.colorClass} ${
-        isSm ? "text-[10px] px-2 py-0.5" : "text-xs px-2.5 py-1"
+      className={`inline-flex items-center gap-1.5 font-mono uppercase tracking-wider rounded-full backdrop-blur-md border ${meta.colorClass} ${
+        isSm ? "text-[10px] px-2.5 py-0.5" : "text-xs px-3 py-1"
       }`}
     >
       <Icon className={isSm ? "w-3 h-3" : "w-3.5 h-3.5"} />

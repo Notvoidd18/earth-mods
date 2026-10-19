@@ -4,21 +4,21 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "EARTH MODS | Planetary Oversight & Grievance Directorate",
+  title: "EARTH MODS | Official Planetary Bug Reports & Helpdesk",
   description:
-    "Official fictional public grievance repository for terrestrial defects, gravitational anomalies, biological design flaws, and atmospheric bugs. Operated by the Directorate of Planetary Balances.",
+    "Official satirical Earth helpdesk. Report physics glitches, biological bugs, and weather balancing issues to the planet mods.",
   keywords: [
     "Earth mods",
-    "planetary complaints",
+    "planet complaints",
     "physics bugs",
-    "terrestrial government satire",
-    "bureaucratic grievances",
+    "earth helpdesk",
+    "planetary simulation",
   ],
-  authors: [{ name: "Planetary Oversight Directorate" }],
+  authors: [{ name: "Earth Mods Directorate" }],
   openGraph: {
-    title: "EARTH MODS | Planetary Oversight & Grievance Directorate",
+    title: "EARTH MODS | Planetary Bug Reports",
     description:
-      "Submit and vote on official planetary bug reports, physics balancing issues, and human biological flaws.",
+      "Earth is in Early Access. Report physics bugs, mosquito spawn rates, and lower back glitches.",
     type: "website",
   },
 };
@@ -29,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="flex min-h-full flex-col bg-[#fbf9f4] text-institutional-950">
+    <html lang="en" className="h-full antialiased dark">
+      <body className="flex min-h-full flex-col bg-brand-dark text-white selection:bg-emerald-400 selection:text-brand-dark">
         <Header />
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {children}

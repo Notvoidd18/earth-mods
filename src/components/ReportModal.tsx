@@ -5,11 +5,11 @@ import { Flag, X, AlertTriangle, Loader2, CheckCircle2 } from "lucide-react";
 import { REPORT_REASONS, ReportReason } from "@/lib/db/schema";
 
 const REASON_LABELS: Record<ReportReason, string> = {
-  NOT_A_PLANETARY_BUG: "Not a Planetary Bug (Standard Personal Grievance)",
-  PROFANITY_OR_HARASSMENT: "Hostile Language / Targeted Harassment",
-  REAL_WORLD_POLITICS: "Real-World Partisan Geopolitics (Breaks Fiction)",
-  SPAM_OR_DUPLICATE: "Spam, Solicitations, or Duplicate Docket",
-  ILLEGAL_CONTENT: "Unlawful Material / Harmful Content",
+  NOT_A_PLANETARY_BUG: "Not an Earth Bug (Just personal bad luck)",
+  PROFANITY_OR_HARASSMENT: "Hostile Language or Harassment",
+  REAL_WORLD_POLITICS: "Real-World Politics (Breaks Earth fiction)",
+  SPAM_OR_DUPLICATE: "Spam or Duplicate Docket",
+  ILLEGAL_CONTENT: "Unlawful / Harmful Content",
 };
 
 interface ReportModalProps {
@@ -43,7 +43,7 @@ export function ReportModal({ complaintId, caseNumber }: ReportModalProps) {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Failed to submit planetary dispute report.");
+        throw new Error(data.error || "Failed to submit dispute.");
       }
 
       setSuccess(true);
@@ -64,29 +64,29 @@ export function ReportModal({ complaintId, caseNumber }: ReportModalProps) {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="text-[11px] font-mono text-stone-500 hover:text-seal-600 transition-colors flex items-center gap-1"
-        title="File an Official Moderation Challenge"
+        className="text-[11px] font-mono text-white/50 hover:text-rose-300 transition-colors flex items-center gap-1.5"
+        title="Report this complaint to Earth Mods"
       >
         <Flag className="w-3 h-3" />
-        <span>Report Abuse</span>
+        <span>Report Bug</span>
       </button>
 
       {isOpen && (
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4"
         >
-          <div className="bg-parchment-50 border-2 border-institutional-800 rounded-sm shadow-docket max-w-md w-full p-6 text-institutional-950">
-            <div className="flex items-center justify-between border-b border-parchment-300 pb-3 mb-4">
+          <div className="glass-panel-strong rounded-3xl max-w-md w-full p-6 text-white border border-white/20 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-seal-600" />
-                <h3 className="font-serif font-bold text-lg">Official Docket Challenge</h3>
+                <AlertTriangle className="w-5 h-5 text-emerald-400" />
+                <h3 className="font-bold text-lg text-white">Flag this Complaint</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="text-stone-400 hover:text-stone-700 p-1 rounded"
+                className="text-white/50 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -94,37 +94,36 @@ export function ReportModal({ complaintId, caseNumber }: ReportModalProps) {
 
             {success ? (
               <div className="py-8 text-center space-y-2">
-                <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
-                <h4 className="font-serif font-bold text-base">Challenge Transmitted</h4>
-                <p className="text-xs text-stone-600">
-                  Case {caseNumber} has been marked for planetary moderation triage.
+                <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
+                <h4 className="font-bold text-base text-white">Flag Sent to Earth Mods</h4>
+                <p className="text-xs text-white/70">
+                  Case {caseNumber} has been sent to our moderators for inspection.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <p className="text-xs text-stone-600 leading-relaxed">
-                  Flagging Case <span className="font-mono font-bold text-institutional-900">{caseNumber}</span>{" "}
-                  for regulatory violation. Submissions violating fictional integrity or civil safety will be
-                  quarantined.
+                <p className="text-xs text-white/70 leading-relaxed">
+                  Reporting Case <span className="font-mono font-bold text-emerald-300">{caseNumber}</span>.
+                  Spam, hate, or real-world politics will be quickly removed.
                 </p>
 
                 {error && (
-                  <div className="p-2.5 rounded bg-rose-50 border border-rose-300 text-rose-800 text-xs">
+                  <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-200 text-xs">
                     {error}
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-xs font-mono font-semibold uppercase text-stone-700 mb-1">
-                    Violation Category
+                  <label className="block text-xs font-mono font-semibold uppercase text-emerald-300 mb-1.5">
+                    Why are you reporting this?
                   </label>
                   <select
                     value={reason}
                     onChange={(e) => setReason(e.target.value as ReportReason)}
-                    className="w-full text-xs font-sans rounded border border-stone-300 bg-white p-2 text-stone-900 focus:border-gold-500 focus:outline-none"
+                    className="w-full text-xs font-sans rounded-xl glass-input p-2.5 text-white focus:outline-none"
                   >
                     {REPORT_REASONS.map((r) => (
-                      <option key={r} value={r}>
+                      <option key={r} value={r} className="bg-brand-dark text-white">
                         {REASON_LABELS[r]}
                       </option>
                     ))}
@@ -132,43 +131,43 @@ export function ReportModal({ complaintId, caseNumber }: ReportModalProps) {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono font-semibold uppercase text-stone-700 mb-1">
-                    Specific Observations (Optional)
+                  <label className="block text-xs font-mono font-semibold uppercase text-emerald-300 mb-1.5">
+                    Extra Details (Optional)
                   </label>
                   <textarea
                     rows={3}
                     maxLength={1000}
                     value={details}
                     onChange={(e) => setDetails(e.target.value)}
-                    placeholder="Provide relevant context regarding the defect or policy violation..."
-                    className="w-full text-xs rounded border border-stone-300 bg-white p-2.5 text-stone-900 focus:border-gold-500 focus:outline-none resize-none"
+                    placeholder="Tell us what's wrong with this submission..."
+                    className="w-full text-xs rounded-xl glass-input p-3 text-white placeholder:text-white/40 resize-none"
                   />
-                  <div className="text-[10px] font-mono text-stone-400 text-right">
+                  <div className="text-[10px] font-mono text-white/40 text-right mt-1">
                     {details.length}/1000
                   </div>
                 </div>
 
-                <div className="flex items-center justify-end space-x-2 pt-2 border-t border-parchment-300">
+                <div className="flex items-center justify-end space-x-2 pt-2 border-t border-white/10">
                   <button
                     type="button"
                     onClick={() => setIsOpen(false)}
                     disabled={isSubmitting}
-                    className="px-3 py-1.5 text-xs text-stone-600 hover:text-stone-900 font-medium rounded"
+                    className="px-3.5 py-1.5 text-xs text-white/70 hover:text-white font-medium rounded-xl hover:bg-white/5 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-4 py-1.5 text-xs font-semibold rounded bg-seal-700 hover:bg-seal-600 text-white shadow-sm flex items-center gap-1.5"
+                    className="liquid-btn px-4 py-2 text-xs font-bold rounded-xl shadow flex items-center gap-1.5"
                   >
                     {isSubmitting ? (
                       <>
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        <span>Filing...</span>
+                        <span>Sending...</span>
                       </>
                     ) : (
-                      <span>File Challenge</span>
+                      <span>Send Report</span>
                     )}
                   </button>
                 </div>

@@ -16,21 +16,20 @@ export default function ErrorBoundary({
   }, [error]);
 
   return (
-    <div className="max-w-lg mx-auto py-16 text-center space-y-6">
-      <div className="w-16 h-16 rounded border-2 border-seal-700 bg-rose-50 flex items-center justify-center mx-auto text-seal-700">
+    <div className="max-w-lg mx-auto py-20 text-center space-y-6">
+      <div className="w-16 h-16 rounded-2xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center mx-auto text-rose-300">
         <AlertOctagon className="w-8 h-8" />
       </div>
 
       <div className="space-y-2">
-        <span className="font-mono text-xs uppercase px-2 py-0.5 rounded bg-rose-100 text-rose-800 border border-rose-200 font-bold">
-          ADMINISTRATIVE PIPELINE EXCEPTION
+        <span className="font-mono text-xs uppercase px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold">
+          PLANETARY SERVER GLITCH
         </span>
-        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-institutional-950">
-          Planetary Interface Fault
+        <h1 className="text-2xl sm:text-3xl font-black text-white">
+          Earth Encountered an Error
         </h1>
-        <p className="text-xs text-stone-600 leading-relaxed">
-          An unexpected exception was encountered while querying or formatting regulatory records.
-          Security protocols prevented sensitive technical infrastructure traces from being exposed.
+        <p className="text-xs text-white/70 leading-relaxed">
+          An unexpected glitch happened while processing planetary records. No sensitive data was compromised.
         </p>
       </div>
 
@@ -38,16 +37,16 @@ export default function ErrorBoundary({
         <button
           type="button"
           onClick={() => reset()}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-gold-600 hover:bg-gold-500 text-institutional-950 font-semibold text-xs transition-colors shadow-sm"
+          className="liquid-btn inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl font-bold text-xs"
         >
           <RotateCcw className="w-4 h-4" />
-          <span>Retry Operation</span>
+          <span>Retry</span>
         </button>
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-parchment-300 bg-white hover:bg-parchment-100 text-institutional-900 font-mono text-xs transition-colors"
+          className="liquid-btn-secondary inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-mono"
         >
-          <span>Return to Index</span>
+          <span>Return Home</span>
         </Link>
       </div>
     </div>

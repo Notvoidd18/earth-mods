@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Scale, ShieldAlert, Loader2, ArrowLeft } from "lucide-react";
+import { Lock, Globe2, ShieldAlert, Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminLoginPage() {
@@ -26,7 +26,7 @@ export default function AdminLoginPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Authentication refused by Directorate security.");
+        throw new Error(data.error || "Access denied by Earth security.");
       }
 
       router.push("/admin");
@@ -41,46 +41,49 @@ export default function AdminLoginPage() {
     <div className="max-w-md mx-auto py-12 px-4 space-y-6">
       <Link
         href="/"
-        className="text-xs font-mono text-stone-600 hover:text-institutional-950 flex items-center gap-1.5 transition-colors"
+        className="text-xs font-mono text-emerald-300 hover:text-white flex items-center gap-1.5 transition-colors"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
-        <span>Return to Citizen Portal</span>
+        <span>Return to Citizen Helpdesk</span>
       </Link>
 
-      <div className="bg-white border-2 border-institutional-900 rounded shadow-docket overflow-hidden">
-        {/* Institutional Header */}
-        <div className="bg-institutional-950 text-parchment-100 p-6 border-b border-institutional-800 text-center space-y-2">
-          <div className="w-12 h-12 rounded border border-gold-500 bg-institutional-900 flex items-center justify-center mx-auto shadow-inner">
-            <Lock className="w-6 h-6 text-gold-400" />
+      <div className="glass-panel-strong rounded-3xl border border-white/20 shadow-2xl overflow-hidden relative">
+        {/* Liquid background glow */}
+        <div className="liquid-glow-sphere -top-12 -right-12 w-48 h-48 bg-emerald-500/20" />
+
+        {/* Header */}
+        <div className="p-6 sm:p-8 text-center space-y-2 border-b border-white/10 relative z-10">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-700 flex items-center justify-center mx-auto shadow-liquid-emerald">
+            <Lock className="w-6 h-6 text-brand-dark" />
           </div>
-          <h1 className="font-serif text-2xl font-bold tracking-tight text-parchment-50">
-            Directorate Moderator Terminal
+          <h1 className="font-extrabold text-2xl tracking-tight text-white">
+            Earth Moderator Portal
           </h1>
-          <p className="text-xs font-mono uppercase tracking-wider text-parchment-400">
-            Authorized Archon Access Only
+          <p className="text-xs font-mono uppercase tracking-wider text-emerald-300">
+            Planetary Staff Only
           </p>
         </div>
 
-        {/* Notice */}
-        <div className="bg-amber-50 border-b border-amber-200 px-6 py-2.5 text-[11px] text-amber-900 flex items-center gap-2">
-          <ShieldAlert className="w-4 h-4 text-amber-700 shrink-0" />
-          <span>Restricted interface. All access attempts logged in audit vault.</span>
+        {/* Security Warning */}
+        <div className="px-6 py-2.5 bg-white/5 border-b border-white/10 text-[11px] text-white/70 flex items-center gap-2">
+          <ShieldAlert className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span>Authorized moderator credentials required. All logins are audited.</span>
         </div>
 
-        {/* Login Form */}
-        <form onSubmit={handleLogin} className="p-6 space-y-4">
+        {/* Form */}
+        <form onSubmit={handleLogin} className="p-6 sm:p-8 space-y-4 relative z-10">
           {error && (
-            <div className="p-3 rounded bg-rose-50 border border-rose-300 text-rose-800 text-xs font-mono">
+            <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-200 text-xs font-mono">
               {error}
             </div>
           )}
 
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <label
               htmlFor="username"
-              className="block text-xs font-mono font-bold uppercase tracking-wider text-institutional-900"
+              className="block text-xs font-mono font-bold uppercase tracking-wider text-emerald-300"
             >
-              Archon Username
+              Moderator Username
             </label>
             <input
               id="username"
@@ -90,14 +93,14 @@ export default function AdminLoginPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="e.g. archon_prime"
-              className="w-full text-xs font-mono rounded border border-stone-300 bg-parchment-50 p-2.5 text-institutional-950 focus:border-gold-500 focus:bg-white focus:outline-none"
+              className="w-full text-xs font-mono rounded-xl glass-input p-3 text-white placeholder:text-white/40 focus:outline-none"
             />
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <label
               htmlFor="password"
-              className="block text-xs font-mono font-bold uppercase tracking-wider text-institutional-900"
+              className="block text-xs font-mono font-bold uppercase tracking-wider text-emerald-300"
             >
               Security Passphrase
             </label>
@@ -109,28 +112,28 @@ export default function AdminLoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••••••••••"
-              className="w-full text-xs font-mono rounded border border-stone-300 bg-parchment-50 p-2.5 text-institutional-950 focus:border-gold-500 focus:bg-white focus:outline-none"
+              className="w-full text-xs font-mono rounded-xl glass-input p-3 text-white placeholder:text-white/40 focus:outline-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full mt-2 py-2.5 rounded bg-gold-600 hover:bg-gold-500 text-institutional-950 font-serif font-bold text-sm shadow transition-colors flex items-center justify-center gap-2"
+            className="w-full mt-2 liquid-btn py-3 rounded-2xl font-bold text-sm shadow-xl flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin text-institutional-950" />
-                <span>Verifying Credentials...</span>
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
+                <span>Verifying Access...</span>
               </>
             ) : (
-              <span>Authenticate Session</span>
+              <span>Enter Mod Room</span>
             )}
           </button>
         </form>
 
-        <div className="bg-parchment-100 border-t border-parchment-200 p-4 text-center text-[10px] font-mono text-stone-500">
-          First-time setup: Use <code className="bg-stone-200 px-1 py-0.5 rounded">npm run db:bootstrap-admin</code> on the server host.
+        <div className="px-6 py-4 bg-white/5 border-t border-white/10 text-center text-[11px] font-mono text-white/50">
+          First-time setup? Use <code className="bg-white/10 px-1.5 py-0.5 rounded text-emerald-300">npm run db:bootstrap-admin</code>
         </div>
       </div>
     </div>

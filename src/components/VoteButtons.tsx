@@ -30,20 +30,19 @@ export function VoteButtons({
   const handleVote = async (targetVote: 1 | -1) => {
     if (isLoading) return;
 
-    // Save previous state for potential rollback
+    // Save previous state for rollback
     const prevScore = score;
     const prevUpvotes = upvotes;
     const prevDownvotes = downvotes;
     const prevActive = activeVote;
 
-    // Calculate optimistic state
+    // Optimistic calculation
     let newScore = score;
     let newUp = upvotes;
     let newDown = downvotes;
     let nextActive: 1 | -1 | 0 = targetVote;
 
     if (activeVote === targetVote) {
-      // Toggle off
       nextActive = 0;
       if (targetVote === 1) {
         newUp -= 1;
@@ -53,7 +52,6 @@ export function VoteButtons({
         newScore += 1;
       }
     } else if (activeVote === 0) {
-      // New vote
       if (targetVote === 1) {
         newUp += 1;
         newScore += 1;
@@ -62,7 +60,6 @@ export function VoteButtons({
         newScore -= 1;
       }
     } else {
-      // Vote flip
       if (targetVote === 1) {
         newUp += 1;
         newDown -= 1;
@@ -91,10 +88,9 @@ export function VoteButtons({
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to register voter endorsement.");
+        throw new Error(data.error || "Failed to record your vote.");
       }
 
-      // Sync confirmed totals from server
       if (typeof data.score === "number") {
         setScore(data.score);
         setUpvotes(data.upvotesCount);
@@ -102,7 +98,6 @@ export function VoteButtons({
         setActiveVote(data.userVote ?? nextActive);
       }
     } catch (err: unknown) {
-      // Rollback optimistic state
       setScore(prevScore);
       setUpvotes(prevUpvotes);
       setDownvotes(prevDownvotes);
@@ -121,55 +116,55 @@ export function VoteButtons({
     <div
       className={`relative flex items-center ${
         isVertical ? "flex-col space-y-1" : "flex-row space-x-2"
-      } bg-parchment-100/90 rounded border border-parchment-300 p-1.5 shadow-subtle`}
+      } backdrop-blur-md bg-white/5 rounded-2xl border border-white/15 p-1.5 shadow-glass-sm`}
     >
-      {/* Endorse / Upvote */}
+      {/* Endorse (Upvote) */}
       <button
         type="button"
         onClick={() => handleVote(1)}
         disabled={isLoading}
-        aria-label="Endorse planetary complaint"
-        className={`p-1 rounded transition-colors ${
+        aria-label="Agree this is a bug"
+        className={`p-1.5 rounded-xl transition-all duration-200 ${
           activeVote === 1
-            ? "text-emerald-700 bg-emerald-100 font-bold"
-            : "text-stone-500 hover:text-emerald-700 hover:bg-stone-200/60"
+            ? "text-emerald-300 bg-emerald-500/30 border border-emerald-400/50 shadow-liquid-emerald"
+            : "text-white/60 hover:text-emerald-300 hover:bg-white/10"
         }`}
-        title="Endorse (Upvote)"
+        title="Agree / Fix this bug! (+1)"
       >
-        <ArrowBigUp className={`w-5 h-5 ${activeVote === 1 ? "fill-emerald-600" : ""}`} />
+        <ArrowBigUp className={`w-5 h-5 ${activeVote === 1 ? "fill-emerald-400" : ""}`} />
       </button>
 
-      {/* Score */}
+      {/* Net Score */}
       <div
-        className="font-mono text-xs font-bold text-institutional-900 px-1 text-center min-w-[2.2rem]"
-        title={`Aggregate Citizen Endorsements: +${upvotes} / -${downvotes}`}
+        className="font-mono text-xs font-bold text-white px-1 text-center min-w-[2.2rem]"
+        title={`Citizen votes: +${upvotes} agree / -${downvotes} disagree`}
       >
         {isLoading ? (
-          <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto text-gold-600" />
+          <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto text-emerald-400" />
         ) : (
           (score > 0 ? `+${score}` : `${score}`)
         )}
       </div>
 
-      {/* Refute / Downvote */}
+      {/* Refute (Downvote) */}
       <button
         type="button"
         onClick={() => handleVote(-1)}
         disabled={isLoading}
-        aria-label="Refute planetary complaint"
-        className={`p-1 rounded transition-colors ${
+        aria-label="Disagree / Works as intended"
+        className={`p-1.5 rounded-xl transition-all duration-200 ${
           activeVote === -1
-            ? "text-seal-600 bg-rose-100 font-bold"
-            : "text-stone-500 hover:text-seal-600 hover:bg-stone-200/60"
+            ? "text-rose-300 bg-rose-500/30 border border-rose-400/50"
+            : "text-white/60 hover:text-rose-300 hover:bg-white/10"
         }`}
-        title="Refute (Downvote)"
+        title="Works as intended / Disagree (-1)"
       >
-        <ArrowBigDown className={`w-5 h-5 ${activeVote === -1 ? "fill-seal-600" : ""}`} />
+        <ArrowBigDown className={`w-5 h-5 ${activeVote === -1 ? "fill-rose-400" : ""}`} />
       </button>
 
-      {/* Ephemeral Error Notification */}
+      {/* Rate limit warning */}
       {errorMessage && (
-        <div className="absolute top-full left-0 z-20 mt-1 whitespace-nowrap rounded bg-seal-800 text-[10px] text-white px-2 py-1 shadow-md">
+        <div className="absolute top-full left-0 z-30 mt-2 whitespace-nowrap rounded-xl bg-black/90 backdrop-blur-md border border-rose-500/50 text-[11px] text-white px-3 py-1.5 shadow-xl">
           {errorMessage}
         </div>
       )}

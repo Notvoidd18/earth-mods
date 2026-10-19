@@ -7,15 +7,13 @@ import {
   AlertTriangle,
   ClipboardList,
   LogOut,
-  ShieldAlert,
   CheckCircle2,
-  XCircle,
   Save,
   Loader2,
   Trash2,
-  Scale,
-  Activity,
-  Layers,
+  Sparkles,
+  ShieldCheck,
+  Globe2,
 } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 import { CategoryBadge } from "./CategoryBadge";
@@ -59,7 +57,7 @@ export function AdminManager({
       for (const c of initialComplaints) {
         init[c.id] = {
           verdict: c.verdict || "",
-          verdictBy: c.verdictBy || `Archon ${moderator.username}`,
+          verdictBy: c.verdictBy || `Earth Mod ${moderator.username}`,
         };
       }
       return init;
@@ -101,7 +99,7 @@ export function AdminManager({
       setComplaintsList((prev) =>
         prev.map((c) => (c.id === complaintId ? { ...c, status: newStatus } : c))
       );
-      showNotice(`Case status updated to ${newStatus}.`);
+      showNotice(`Bug status changed to ${newStatus}.`);
     } catch (err: unknown) {
       showNotice(err instanceof Error ? err.message : "Failed to update status", "error");
     } finally {
@@ -134,7 +132,7 @@ export function AdminManager({
           c.id === complaintId ? { ...c, verdict: v.verdict, verdictBy: v.verdictBy } : c
         )
       );
-      showNotice("Directorate verdict decree published to public case file.");
+      showNotice("Earth Mod response published to public case file!");
     } catch (err: unknown) {
       showNotice(err instanceof Error ? err.message : "Failed to save verdict", "error");
     } finally {
@@ -174,7 +172,7 @@ export function AdminManager({
   };
 
   const handlePurgeComplaint = async (complaintId: string, caseNumber: string) => {
-    if (!confirm(`Confirm irreversible purge of Case Docket ${caseNumber}?`)) return;
+    if (!confirm(`Are you sure you want to permanently delete Case ${caseNumber}?`)) return;
 
     setLoadingAction(`purge-${complaintId}`);
     try {
@@ -191,9 +189,9 @@ export function AdminManager({
       if (!res.ok) throw new Error(data.error);
 
       setComplaintsList((prev) => prev.filter((c) => c.id !== complaintId));
-      showNotice(`Case ${caseNumber} purged from planetary ledger.`);
+      showNotice(`Case ${caseNumber} deleted from Earth records.`);
     } catch (err: unknown) {
-      showNotice(err instanceof Error ? err.message : "Purge failed", "error");
+      showNotice(err instanceof Error ? err.message : "Delete failed", "error");
     } finally {
       setLoadingAction(null);
     }
@@ -201,160 +199,136 @@ export function AdminManager({
 
   return (
     <div className="space-y-8">
-      {/* Top Directorate Banner */}
-      <div className="bg-institutional-950 text-parchment-100 rounded border-2 border-institutional-900 p-6 shadow-docket flex flex-wrap items-center justify-between gap-4">
+      {/* Top Banner */}
+      <div className="glass-panel-strong rounded-3xl p-6 sm:p-8 border border-white/20 shadow-2xl flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="font-mono text-xs uppercase px-2 py-0.5 rounded bg-gold-500/20 text-gold-400 border border-gold-500/30">
-              ARCHON TERMINAL
+            <span className="font-mono text-xs uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">
+              PLANETARY COMMAND
             </span>
-            <span className="font-mono text-xs text-parchment-400">Authenticated:</span>
-            <strong className="text-parchment-50 font-mono">{moderator.username}</strong>
-            <span className="text-xs font-mono text-gold-400">({moderator.role})</span>
+            <span className="font-mono text-xs text-white/50">Logged in as:</span>
+            <strong className="text-white font-mono">{moderator.username}</strong>
+            <span className="text-xs font-mono text-emerald-400">({moderator.role})</span>
           </div>
-          <h1 className="font-serif text-2xl font-bold tracking-tight text-parchment-50 mt-1">
-            Directorate Oversight & Moderation Ledger
+          <h1 className="font-black text-2xl sm:text-3xl tracking-tight text-white mt-1">
+            Earth Moderator Headquarters
           </h1>
         </div>
 
         <div className="flex items-center space-x-3">
           <Link
             href="/"
-            className="px-3 py-1.5 rounded text-xs font-mono border border-parchment-400/30 text-parchment-200 hover:bg-institutional-800 transition-colors"
+            className="liquid-btn-secondary px-4 py-2 rounded-xl text-xs font-mono"
           >
-            Citizen Portal
+            Citizen Helpdesk
           </Link>
           <button
             type="button"
             onClick={handleLogout}
-            className="px-3 py-1.5 rounded text-xs font-mono bg-seal-800 hover:bg-seal-700 text-white transition-colors flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl text-xs font-mono bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 transition-colors flex items-center gap-1.5"
           >
             <LogOut className="w-3.5 h-3.5" />
-            <span>End Session</span>
+            <span>Sign Out</span>
           </button>
         </div>
       </div>
 
-      {/* Ephemeral Feedback Notification */}
+      {/* Notice Banner */}
       {notice && (
         <div
-          className={`p-3 rounded text-xs font-mono flex items-center gap-2 ${
+          className={`p-4 rounded-2xl text-xs font-mono flex items-center gap-2 border ${
             notice.type === "success"
-              ? "bg-emerald-50 border border-emerald-300 text-emerald-900"
-              : "bg-rose-50 border border-rose-300 text-rose-900"
+              ? "bg-emerald-500/20 border-emerald-400/40 text-emerald-200"
+              : "bg-rose-500/20 border-rose-400/40 text-rose-200"
           }`}
         >
           {notice.type === "success" ? (
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           ) : (
-            <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+            <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
           )}
           <span>{notice.text}</span>
         </div>
       )}
 
-      {/* Aggregate Institutional Metrics */}
+      {/* Stats Counter Row */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <div className="bg-white border border-parchment-300 rounded p-4 shadow-subtle space-y-1">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-stone-500">
-            Total Dockets
-          </span>
-          <div className="font-mono text-2xl font-bold text-institutional-950">
-            {metrics.totalComplaints}
-          </div>
+        <div className="glass-panel rounded-2xl p-4 text-center border border-white/10 space-y-1">
+          <div className="text-[10px] font-mono uppercase text-white/50">Total Tickets</div>
+          <div className="text-2xl font-mono font-bold text-white">{metrics.totalComplaints}</div>
         </div>
 
-        <div className="bg-white border border-parchment-300 rounded p-4 shadow-subtle space-y-1">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-amber-600">
-            Pending Review
-          </span>
-          <div className="font-mono text-2xl font-bold text-amber-700">
-            {metrics.pendingComplaints}
-          </div>
+        <div className="glass-panel rounded-2xl p-4 text-center border border-white/10 space-y-1">
+          <div className="text-[10px] font-mono uppercase text-amber-300">Pending Review</div>
+          <div className="text-2xl font-mono font-bold text-amber-300">{metrics.pendingComplaints}</div>
         </div>
 
-        <div className="bg-white border border-parchment-300 rounded p-4 shadow-subtle space-y-1">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-600">
-            Resolved
-          </span>
-          <div className="font-mono text-2xl font-bold text-emerald-700">
-            {metrics.resolvedComplaints}
-          </div>
+        <div className="glass-panel rounded-2xl p-4 text-center border border-white/10 space-y-1">
+          <div className="text-[10px] font-mono uppercase text-emerald-300">Resolved</div>
+          <div className="text-2xl font-mono font-bold text-emerald-300">{metrics.resolvedComplaints}</div>
         </div>
 
-        <div className="bg-white border border-parchment-300 rounded p-4 shadow-subtle space-y-1">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-gold-600">
-            Canonized
-          </span>
-          <div className="font-mono text-2xl font-bold text-gold-700">
-            {metrics.canonizedComplaints}
-          </div>
+        <div className="glass-panel rounded-2xl p-4 text-center border border-white/10 space-y-1">
+          <div className="text-[10px] font-mono uppercase text-teal-300">Canonized Lore</div>
+          <div className="text-2xl font-mono font-bold text-teal-300">{metrics.canonizedComplaints}</div>
         </div>
 
-        <div className="bg-white border border-parchment-300 rounded p-4 shadow-subtle space-y-1">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-seal-600">
-            Pending Reports
-          </span>
-          <div className="font-mono text-2xl font-bold text-seal-700">
-            {metrics.pendingReports}
-          </div>
+        <div className="glass-panel rounded-2xl p-4 text-center border border-white/10 space-y-1">
+          <div className="text-[10px] font-mono uppercase text-rose-300">Pending Flags</div>
+          <div className="text-2xl font-mono font-bold text-rose-300">{metrics.pendingReports}</div>
         </div>
 
-        <div className="bg-white border border-parchment-300 rounded p-4 shadow-subtle space-y-1">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-stone-500">
-            Votes Cast
-          </span>
-          <div className="font-mono text-2xl font-bold text-institutional-900">
-            {metrics.totalVotes}
-          </div>
+        <div className="glass-panel rounded-2xl p-4 text-center border border-white/10 space-y-1">
+          <div className="text-[10px] font-mono uppercase text-white/50">Total Votes</div>
+          <div className="text-2xl font-mono font-bold text-white">{metrics.totalVotes}</div>
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="border-b border-parchment-300 flex items-center space-x-2">
+      {/* Tabs */}
+      <div className="flex items-center space-x-2 border-b border-white/10 pb-2">
         <button
           type="button"
           onClick={() => setActiveTab("complaints")}
-          className={`px-4 py-2.5 text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-colors ${
+          className={`px-4 py-2.5 text-xs font-mono font-bold uppercase tracking-wider rounded-xl flex items-center gap-2 transition-all ${
             activeTab === "complaints"
-              ? "border-institutional-900 text-institutional-950 bg-white"
-              : "border-transparent text-stone-500 hover:text-stone-900"
+              ? "bg-emerald-500 text-brand-dark shadow-liquid-emerald font-black"
+              : "text-white/70 hover:text-white hover:bg-white/5"
           }`}
         >
           <FileText className="w-4 h-4" />
-          <span>Complaints Ledger ({complaintsList.length})</span>
+          <span>Tickets ({complaintsList.length})</span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab("reports")}
-          className={`px-4 py-2.5 text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-colors ${
+          className={`px-4 py-2.5 text-xs font-mono font-bold uppercase tracking-wider rounded-xl flex items-center gap-2 transition-all ${
             activeTab === "reports"
-              ? "border-seal-600 text-seal-800 bg-white"
-              : "border-transparent text-stone-500 hover:text-stone-900"
+              ? "bg-emerald-500 text-brand-dark shadow-liquid-emerald font-black"
+              : "text-white/70 hover:text-white hover:bg-white/5"
           }`}
         >
-          <AlertTriangle className="w-4 h-4 text-seal-600" />
-          <span>Citizen Disputes ({reportsList.filter((r) => r.status === "PENDING").length})</span>
+          <AlertTriangle className="w-4 h-4" />
+          <span>Citizen Flags ({reportsList.filter((r) => r.status === "PENDING").length})</span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab("audit")}
-          className={`px-4 py-2.5 text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-colors ${
+          className={`px-4 py-2.5 text-xs font-mono font-bold uppercase tracking-wider rounded-xl flex items-center gap-2 transition-all ${
             activeTab === "audit"
-              ? "border-institutional-900 text-institutional-950 bg-white"
-              : "border-transparent text-stone-500 hover:text-stone-900"
+              ? "bg-emerald-500 text-brand-dark shadow-liquid-emerald font-black"
+              : "text-white/70 hover:text-white hover:bg-white/5"
           }`}
         >
           <ClipboardList className="w-4 h-4" />
-          <span>Audit Trail ({auditLogs.length})</span>
+          <span>Audit Log ({auditLogs.length})</span>
         </button>
       </div>
 
-      {/* Tab 1: Complaints Ledger */}
+      {/* Tab 1: Complaints */}
       {activeTab === "complaints" && (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {complaintsList.map((c) => {
             const vState = verdicts[c.id] || { verdict: "", verdictBy: "" };
             const isSaving = loadingAction === `verdict-${c.id}`;
@@ -364,37 +338,35 @@ export function AdminManager({
             return (
               <div
                 key={c.id}
-                className="bg-white border border-parchment-300 rounded shadow-subtle p-5 space-y-4"
+                className="glass-panel rounded-3xl p-5 sm:p-6 border border-white/10 space-y-4"
               >
-                {/* Header Strip */}
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-parchment-200 pb-3">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
                   <div className="flex items-center space-x-3">
                     <Link
                       href={`/complaints/${c.caseNumber}`}
                       target="_blank"
-                      className="font-mono font-bold text-sm text-institutional-900 hover:text-gold-600 transition-colors"
+                      className="font-mono font-bold text-sm text-emerald-300 hover:text-white transition-colors"
                     >
-                      {c.caseNumber}
+                      #{c.caseNumber}
                     </Link>
                     <CategoryBadge category={c.category} size="sm" />
-                    <span className="text-xs text-stone-500 font-mono">
-                      Score: {c.score > 0 ? `+${c.score}` : c.score} (+{c.upvotesCount} / -
-                      {c.downvotesCount})
+                    <span className="text-xs text-white/50 font-mono">
+                      Score: {c.score > 0 ? `+${c.score}` : c.score} (+{c.upvotesCount} / -{c.downvotesCount})
                     </span>
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs font-mono text-stone-500">Status:</span>
+                    <span className="text-xs font-mono text-white/60">Status:</span>
                     <select
                       disabled={isUpdatingStatus}
                       value={c.status}
                       onChange={(e) =>
                         handleStatusChange(c.id, e.target.value as ComplaintStatus)
                       }
-                      className="text-xs font-mono rounded border border-stone-300 bg-parchment-50 px-2.5 py-1 text-institutional-900 focus:border-gold-500 focus:outline-none"
+                      className="text-xs font-mono rounded-xl glass-input px-2.5 py-1 text-white focus:outline-none"
                     >
                       {COMPLAINT_STATUSES.map((st) => (
-                        <option key={st} value={st}>
+                        <option key={st} value={st} className="bg-brand-dark text-white">
                           {st.replace(/_/g, " ")}
                         </option>
                       ))}
@@ -403,25 +375,22 @@ export function AdminManager({
                   </div>
                 </div>
 
-                {/* Grievance Summary */}
                 <div className="space-y-1">
-                  <h3 className="font-serif font-bold text-base text-institutional-950">
-                    {c.title}
-                  </h3>
-                  <p className="text-xs text-stone-700 leading-relaxed whitespace-pre-line bg-parchment-50/60 p-3 rounded border border-parchment-200">
+                  <h3 className="font-bold text-base text-white">{c.title}</h3>
+                  <p className="text-xs text-white/70 leading-relaxed bg-white/5 p-3 rounded-2xl border border-white/5 whitespace-pre-line">
                     {c.description}
                   </p>
                 </div>
 
-                {/* Verdict Decree Editor */}
-                <div className="space-y-2 bg-parchment-100/70 p-4 rounded border border-parchment-300">
+                {/* Response Authoring */}
+                <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-400/30 space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-mono font-bold uppercase text-institutional-900 flex items-center gap-1.5">
-                      <Scale className="w-3.5 h-3.5 text-gold-600" />
-                      <span>Official Directorate Adjudication Decree</span>
+                    <label className="text-xs font-mono font-bold uppercase text-emerald-300 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Official Earth Mods Verdict</span>
                     </label>
-                    <span className="text-[10px] font-mono text-stone-500">
-                      Publishes directly to citizen Case File
+                    <span className="text-[10px] font-mono text-white/40">
+                      Shows publicly on case page
                     </span>
                   </div>
 
@@ -435,13 +404,13 @@ export function AdminManager({
                         [c.id]: { ...vState, verdict: e.target.value },
                       }))
                     }
-                    placeholder="Enter official verdict decree (e.g. 'Working as intended under Genesis Edict 4', 'Patch scheduled for 2027.2')..."
-                    className="w-full text-xs font-sans rounded border border-stone-300 bg-white p-2.5 text-stone-900 focus:border-gold-500 focus:outline-none resize-none"
+                    placeholder="Write official response (e.g. 'Working as intended under Genesis laws', 'Bug identified, patch planned for 2027')..."
+                    className="w-full text-xs rounded-xl glass-input p-2.5 text-white placeholder:text-white/40 resize-none focus:outline-none"
                   />
 
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
                     <div className="flex items-center space-x-2">
-                      <span className="text-[11px] font-mono text-stone-600">Attribution:</span>
+                      <span className="text-[11px] font-mono text-white/60">Mod Title:</span>
                       <input
                         type="text"
                         value={vState.verdictBy}
@@ -451,8 +420,8 @@ export function AdminManager({
                             [c.id]: { ...vState, verdictBy: e.target.value },
                           }))
                         }
-                        placeholder="e.g. Chief Gravitational Arbiter"
-                        className="text-xs font-mono rounded border border-stone-300 bg-white px-2 py-1 text-stone-900 focus:border-gold-500 focus:outline-none w-56"
+                        placeholder="e.g. Lead Gravity Engineer"
+                        className="text-xs font-mono rounded-xl glass-input px-2.5 py-1 text-white w-52 focus:outline-none"
                       />
                     </div>
 
@@ -461,7 +430,7 @@ export function AdminManager({
                         type="button"
                         disabled={isSaving}
                         onClick={() => handleSaveVerdict(c.id)}
-                        className="px-3.5 py-1.5 rounded bg-gold-600 hover:bg-gold-500 text-institutional-950 font-mono text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm"
+                        className="liquid-btn px-4 py-1.5 rounded-xl text-xs font-bold shadow flex items-center gap-1.5"
                       >
                         {isSaving ? (
                           <>
@@ -480,11 +449,10 @@ export function AdminManager({
                         type="button"
                         disabled={isPurging}
                         onClick={() => handlePurgeComplaint(c.id, c.caseNumber)}
-                        className="px-2.5 py-1.5 rounded border border-rose-300 bg-rose-50 hover:bg-rose-100 text-seal-700 font-mono text-xs transition-colors flex items-center gap-1"
-                        title="Irreversibly purge complaint"
+                        className="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-xs font-mono transition-colors flex items-center gap-1"
                       >
                         <Trash2 className="w-3 h-3" />
-                        <span>Purge</span>
+                        <span>Delete</span>
                       </button>
                     </div>
                   </div>
@@ -495,111 +463,104 @@ export function AdminManager({
         </div>
       )}
 
-      {/* Tab 2: Citizen Reports */}
+      {/* Tab 2: Reports */}
       {activeTab === "reports" && (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {reportsList.length === 0 ? (
-            <div className="py-12 text-center text-xs font-mono text-stone-500 bg-white border border-parchment-300 rounded p-6">
-              No citizen dispute reports currently filed in registry queue.
+            <div className="py-12 text-center text-xs font-mono text-white/50 glass-panel rounded-3xl p-6">
+              No active citizen dispute flags.
             </div>
           ) : (
-            reportsList.map((r) => {
-              const isLoading =
-                loadingAction === `report-${r.id}` || loadingAction === `purge-${r.complaintId}`;
-
-              return (
-                <div
-                  key={r.id}
-                  className="bg-white border border-parchment-300 rounded p-4 shadow-subtle space-y-3"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-parchment-200 pb-2">
-                    <div className="flex items-center space-x-2">
-                      <span className="font-mono text-xs font-bold uppercase px-2 py-0.5 rounded bg-rose-100 text-rose-800 border border-rose-200">
-                        {r.reason.replace(/_/g, " ")}
-                      </span>
-                      <span className="text-xs font-mono text-stone-500">
-                        Target Case: <strong>{r.complaintCaseNumber || r.complaintId}</strong>
-                      </span>
-                    </div>
-
-                    <span
-                      className={`text-xs font-mono uppercase px-2 py-0.5 rounded ${
-                        r.status === "PENDING"
-                          ? "bg-amber-100 text-amber-800 font-bold"
-                          : "bg-stone-100 text-stone-600"
-                      }`}
-                    >
-                      {r.status}
+            reportsList.map((r) => (
+              <div
+                key={r.id}
+                className="glass-panel rounded-2xl p-4 border border-white/10 space-y-2.5"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="font-mono text-xs font-bold uppercase px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                      {r.reason.replace(/_/g, " ")}
+                    </span>
+                    <span className="text-xs font-mono text-white/70">
+                      Target: <strong>{r.complaintCaseNumber || r.complaintId}</strong>
                     </span>
                   </div>
 
-                  {r.details && (
-                    <p className="text-xs text-stone-700 bg-parchment-50 p-2.5 rounded border border-parchment-200">
-                      <strong>Citizen Note:</strong> {r.details}
-                    </p>
-                  )}
-
-                  <div className="flex items-center justify-between pt-2">
-                    <span className="text-[11px] font-mono text-stone-400">
-                      Timestamp: {new Date(r.createdAt).toLocaleString()}
-                    </span>
-
-                    {r.status === "PENDING" && (
-                      <div className="flex items-center space-x-2">
-                        <button
-                          type="button"
-                          disabled={isLoading}
-                          onClick={() => handleReportAction(r.id, "DISMISS")}
-                          className="px-3 py-1 rounded text-xs font-mono bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors"
-                        >
-                          Dismiss Flag
-                        </button>
-                        <button
-                          type="button"
-                          disabled={isLoading}
-                          onClick={() => handleReportAction(r.id, "RESOLVE")}
-                          className="px-3 py-1 rounded text-xs font-mono bg-emerald-700 hover:bg-emerald-600 text-white transition-colors"
-                        >
-                          Mark Reviewed
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  <span
+                    className={`text-xs font-mono uppercase px-2.5 py-0.5 rounded-full ${
+                      r.status === "PENDING"
+                        ? "bg-amber-500/20 text-amber-300 font-bold"
+                        : "bg-white/10 text-white/50"
+                    }`}
+                  >
+                    {r.status}
+                  </span>
                 </div>
-              );
-            })
+
+                {r.details && (
+                  <p className="text-xs text-white/80 bg-white/5 p-2.5 rounded-xl border border-white/5">
+                    <strong>Citizen Note:</strong> {r.details}
+                  </p>
+                )}
+
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-[11px] font-mono text-white/40">
+                    {new Date(r.createdAt).toLocaleString()}
+                  </span>
+
+                  {r.status === "PENDING" && (
+                    <div className="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => handleReportAction(r.id, "DISMISS")}
+                        className="px-3 py-1 rounded-xl text-xs font-mono bg-white/10 hover:bg-white/20 text-white transition-colors"
+                      >
+                        Dismiss
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleReportAction(r.id, "RESOLVE")}
+                        className="liquid-btn px-3 py-1 rounded-xl text-xs font-mono"
+                      >
+                        Mark Reviewed
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))
           )}
         </div>
       )}
 
-      {/* Tab 3: Institutional Audit Logs */}
+      {/* Tab 3: Audit */}
       {activeTab === "audit" && (
-        <div className="bg-white border border-parchment-300 rounded shadow-subtle overflow-hidden">
-          <div className="px-5 py-3 border-b border-parchment-200 bg-parchment-100 font-mono text-xs uppercase font-bold text-stone-700">
-            Immutable Directorate Action Ledger
+        <div className="glass-panel rounded-3xl border border-white/15 overflow-hidden">
+          <div className="px-5 py-3 border-b border-white/10 bg-white/5 font-mono text-xs uppercase font-bold text-emerald-300">
+            Immutable Moderator Action Log
           </div>
 
-          <div className="divide-y divide-parchment-200 font-mono text-xs">
+          <div className="divide-y divide-white/10 font-mono text-xs">
             {auditLogs.length === 0 ? (
-              <div className="p-6 text-center text-stone-400">No actions logged yet.</div>
+              <div className="p-6 text-center text-white/40">No actions recorded yet.</div>
             ) : (
               auditLogs.map((log) => (
                 <div key={log.id} className="p-3.5 flex flex-wrap items-center justify-between gap-3">
                   <div className="space-y-0.5">
                     <div className="flex items-center space-x-2">
-                      <span className="font-bold text-institutional-950">{log.action}</span>
-                      <span className="text-stone-400">•</span>
-                      <span className="text-stone-600">
+                      <span className="font-bold text-white">{log.action}</span>
+                      <span className="text-white/30">•</span>
+                      <span className="text-emerald-300">
                         {log.targetType}: {log.targetId}
                       </span>
                     </div>
                     {log.details && (
-                      <div className="text-[11px] text-stone-500">
-                        Payload: {JSON.stringify(log.details)}
+                      <div className="text-[11px] text-white/50">
+                        {JSON.stringify(log.details)}
                       </div>
                     )}
                   </div>
-                  <div className="text-right text-[11px] text-stone-400">
+                  <div className="text-right text-[11px] text-white/40">
                     <div>{log.moderatorUsername || "System"}</div>
                     <div>{new Date(log.createdAt).toLocaleString()}</div>
                   </div>

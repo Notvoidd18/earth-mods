@@ -6,12 +6,13 @@ import { CATEGORIES, ComplaintCategory } from "@/lib/db/schema";
 import { CATEGORY_METADATA } from "@/components/CategoryBadge";
 import {
   FilePlus2,
-  ShieldAlert,
+  AlertTriangle,
   Loader2,
   Lock,
   UserCheck,
-  Info,
-  CheckCircle2,
+  Sparkles,
+  Send,
+  HelpCircle,
 } from "lucide-react";
 
 export default function SubmitComplaintPage() {
@@ -52,10 +53,9 @@ export default function SubmitComplaintPage() {
         if (data.details?.fieldErrors) {
           setFieldErrors(data.details.fieldErrors);
         }
-        throw new Error(data.error || "Grievance filing rejected by intake tribunal.");
+        throw new Error(data.error || "Grievance filing rejected.");
       }
 
-      // Redirect to the newly established case file
       router.push(`/complaints/${data.caseNumber}`);
     } catch (err: unknown) {
       setErrorMessage(err instanceof Error ? err.message : "Submission failure.");
@@ -64,47 +64,48 @@ export default function SubmitComplaintPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      {/* Header Docket Bar */}
-      <div className="border-b-2 border-institutional-900 pb-4">
-        <div className="flex items-center space-x-2 text-xs font-mono uppercase text-gold-600 font-bold tracking-wider mb-1">
-          <FilePlus2 className="w-4 h-4" />
-          <span>Form 88-TERRA: Formal Grievance Docket</span>
+    <div className="max-w-3xl mx-auto space-y-8">
+      {/* Page Header */}
+      <div className="text-center space-y-3">
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-mono font-semibold">
+          <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Earth Ticket Intake • Form 88</span>
         </div>
-        <h1 className="font-serif text-3xl font-bold text-institutional-950">
-          Lodge an Official Planetary Grievance
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
+          Report an Earth <span className="text-emerald-400">Design Flaw</span>
         </h1>
-        <p className="text-xs sm:text-sm text-stone-600 mt-1">
-          Complete the intake docket below to formally register a flaw in the terrestrial environment,
-          physical constants, or evolutionary mechanics with the Earth Directorate.
+        <p className="text-white/70 text-xs sm:text-sm max-w-lg mx-auto leading-relaxed">
+          Did gravity pull your coffee mug down too quickly? Did mosquitoes bite you through your socks?
+          Let the Earth development team know what needs patching.
         </p>
       </div>
 
-      {/* General Error Banner */}
+      {/* Error Banner */}
       {errorMessage && (
-        <div className="p-4 rounded border-l-4 border-seal-600 bg-rose-50 text-seal-900 text-xs flex items-start gap-2">
-          <ShieldAlert className="w-4 h-4 text-seal-600 shrink-0 mt-0.5" />
+        <div className="glass-panel rounded-2xl p-4 border border-rose-500/40 bg-rose-500/10 text-rose-200 text-xs flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0" />
           <div>
-            <span className="font-bold">Intake Interruption:</span> {errorMessage}
+            <strong>Submission Notice:</strong> {errorMessage}
           </div>
         </div>
       )}
 
-      {/* Main Intake Form */}
+      {/* Main Glassmorphic Form Card */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white border border-parchment-300 rounded shadow-card p-6 sm:p-8 space-y-6"
+        className="glass-panel-strong rounded-3xl p-6 sm:p-8 md:p-10 border border-white/20 shadow-2xl space-y-6 relative overflow-hidden"
       >
-        {/* Title */}
-        <div className="space-y-1.5">
+        {/* Liquid background glow */}
+        <div className="liquid-glow-sphere -top-16 -right-16 w-64 h-64 bg-emerald-500/15" />
+        <div className="liquid-glow-sphere -bottom-16 -left-16 w-64 h-64 bg-emerald-400/15" />
+
+        {/* Bug Title */}
+        <div className="space-y-2 relative z-10">
           <div className="flex items-center justify-between">
-            <label
-              htmlFor="title"
-              className="block text-xs font-mono font-bold uppercase tracking-wider text-institutional-900"
-            >
-              Grievance Summary / Title <span className="text-seal-600">*</span>
+            <label htmlFor="title" className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-300">
+              Bug Summary / Title <span className="text-rose-400">*</span>
             </label>
-            <span className="text-[11px] font-mono text-stone-400">{title.length}/180</span>
+            <span className="text-[11px] font-mono text-white/50">{title.length}/180</span>
           </div>
           <input
             id="title"
@@ -113,102 +114,93 @@ export default function SubmitComplaintPage() {
             maxLength={180}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g., Lower back warranty expires prematurely after 25 planetary revolutions..."
-            className={`w-full text-sm rounded border ${
-              fieldErrors.title ? "border-seal-600 bg-rose-50/40" : "border-parchment-300"
-            } bg-parchment-50/50 p-2.5 text-institutional-950 placeholder:text-stone-400 focus:border-gold-500 focus:bg-white focus:outline-none`}
+            placeholder="e.g., Lower back warranty expired right after turning 25..."
+            className={`w-full text-sm rounded-2xl glass-input p-3.5 ${
+              fieldErrors.title ? "border-rose-400 bg-rose-500/10" : ""
+            } placeholder:text-white/30 focus:outline-none`}
           />
           {fieldErrors.title && (
-            <p className="text-[11px] font-mono text-seal-600">{fieldErrors.title[0]}</p>
+            <p className="text-xs font-mono text-rose-300">{fieldErrors.title[0]}</p>
           )}
-          <p className="text-[11px] text-stone-500">
-            Provide a concise, declarative summary of the defect.
+          <p className="text-[11px] text-white/60">
+            Keep it simple, punchy, and funny.
           </p>
         </div>
 
         {/* Category Picker */}
-        <div className="space-y-1.5">
-          <label
-            htmlFor="category"
-            className="block text-xs font-mono font-bold uppercase tracking-wider text-institutional-900"
-          >
-            Planetary Jurisdiction Category <span className="text-seal-600">*</span>
+        <div className="space-y-2 relative z-10">
+          <label htmlFor="category" className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-300">
+            Which part of Earth is broken? <span className="text-rose-400">*</span>
           </label>
           <select
             id="category"
             value={category}
             onChange={(e) => setCategory(e.target.value as ComplaintCategory)}
-            className="w-full text-sm font-mono rounded border border-parchment-300 bg-parchment-50/50 p-2.5 text-institutional-950 focus:border-gold-500 focus:bg-white focus:outline-none"
+            className="w-full text-sm font-mono rounded-2xl glass-input p-3.5 text-white focus:outline-none"
           >
             {CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
+              <option key={cat} value={cat} className="bg-brand-dark text-white">
                 {CATEGORY_METADATA[cat]?.label}
               </option>
             ))}
           </select>
-          <p className="text-[11px] text-stone-500">
-            Directs docket to the appropriate specialized planetary ministry.
+          <p className="text-[11px] text-white/60">
+            Routes your ticket directly to the right planetary developer.
           </p>
         </div>
 
-        {/* Detailed Description */}
-        <div className="space-y-1.5">
+        {/* Bug Description */}
+        <div className="space-y-2 relative z-10">
           <div className="flex items-center justify-between">
-            <label
-              htmlFor="description"
-              className="block text-xs font-mono font-bold uppercase tracking-wider text-institutional-900"
-            >
-              Factual Incident Description <span className="text-seal-600">*</span>
+            <label htmlFor="description" className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-300">
+              Detailed Description <span className="text-rose-400">*</span>
             </label>
-            <span className="text-[11px] font-mono text-stone-400">{description.length}/3000</span>
+            <span className="text-[11px] font-mono text-white/50">{description.length}/3000</span>
           </div>
           <textarea
             id="description"
             required
-            rows={6}
+            rows={5}
             maxLength={3000}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Document observed anomalies, reproducibility rate, physical coordinates, and recommended balancing adjustments..."
-            className={`w-full text-sm rounded border ${
-              fieldErrors.description ? "border-seal-600 bg-rose-50/40" : "border-parchment-300"
-            } bg-parchment-50/50 p-3 text-institutional-950 placeholder:text-stone-400 focus:border-gold-500 focus:bg-white focus:outline-none`}
+            placeholder="Tell us what happened, when it happened, and how you think the Earth mods should balance or patch it..."
+            className={`w-full text-sm rounded-2xl glass-input p-3.5 ${
+              fieldErrors.description ? "border-rose-400 bg-rose-500/10" : ""
+            } placeholder:text-white/30 focus:outline-none resize-none`}
           />
           {fieldErrors.description && (
-            <p className="text-[11px] font-mono text-seal-600">{fieldErrors.description[0]}</p>
+            <p className="text-xs font-mono text-rose-300">{fieldErrors.description[0]}</p>
           )}
-          <p className="text-[11px] text-stone-500">
-            Minimum 15 characters. Please avoid personal geopolitical grievances or real-world partisan disputes.
+          <p className="text-[11px] text-white/60">
+            Minimum 15 characters. Please avoid real-world political attacks or personal hate.
           </p>
         </div>
 
-        {/* Submitter Attribution Box */}
-        <div className="border border-parchment-300 rounded bg-parchment-50 p-4 space-y-3">
+        {/* Identity & Anonymous Toggle */}
+        <div className="glass-panel rounded-2xl p-4 sm:p-5 border border-white/10 space-y-3 relative z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <UserCheck className="w-4 h-4 text-gold-600" />
-              <span className="text-xs font-mono font-bold uppercase text-stone-800">
-                Submitter Classification
+              <UserCheck className="w-4 h-4 text-emerald-400" />
+              <span className="text-xs font-mono font-bold uppercase text-white">
+                Submitter Identity
               </span>
             </div>
-            <label className="flex items-center space-x-2 cursor-pointer text-xs font-mono text-stone-700">
+            <label className="flex items-center space-x-2 cursor-pointer text-xs font-mono text-emerald-300 hover:text-white transition-colors">
               <input
                 type="checkbox"
                 checked={isAnonymous}
                 onChange={(e) => setIsAnonymous(e.target.checked)}
-                className="rounded border-stone-300 text-gold-600 focus:ring-gold-500"
+                className="rounded border-white/20 text-emerald-500 focus:ring-emerald-400"
               />
-              <span>File as Anonymous Citizen</span>
+              <span>File as Anonymous Human</span>
             </label>
           </div>
 
           {!isAnonymous && (
-            <div className="space-y-1 pt-2 border-t border-parchment-200">
-              <label
-                htmlFor="authorName"
-                className="block text-xs font-mono uppercase text-stone-700"
-              >
-                Citizen Moniker / Public Call-sign
+            <div className="space-y-1.5 pt-2 border-t border-white/10">
+              <label htmlFor="authorName" className="block text-xs font-mono text-white/80">
+                Your Citizen Nickname or Gamer Tag
               </label>
               <input
                 id="authorName"
@@ -216,51 +208,40 @@ export default function SubmitComplaintPage() {
                 maxLength={60}
                 value={authorName}
                 onChange={(e) => setAuthorName(e.target.value)}
-                placeholder="e.g., OrbitalCartographer_42"
-                className="w-full text-xs rounded border border-parchment-300 bg-white p-2 text-stone-900 focus:border-gold-500 focus:outline-none"
+                placeholder="e.g. GravityHater_99"
+                className="w-full text-xs rounded-xl glass-input p-2.5 text-white placeholder:text-white/40 focus:outline-none"
               />
-              <p className="text-[10px] text-stone-500">
-                This moniker will be visibly attributed to the case in the public docket index.
-              </p>
             </div>
           )}
         </div>
 
-        {/* Institutional Privacy & Anti-Abuse Disclosure */}
-        <div className="border-l-2 border-gold-500 pl-3 py-1 text-xs text-stone-600 space-y-1">
-          <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold text-stone-800">
-            <Info className="w-3.5 h-3.5 text-gold-600" />
-            <span>Transparency & Technical Disclosures</span>
-          </div>
-          <p className="text-[11px] leading-relaxed">
-            By lodging this docket, you affirm this grievance adheres to satirical fiction boundaries.
-            While anonymous filing shields your public identity, anonymous submission tokens are hashed
-            server-side with a cryptographic salt to enforce rate limits and prevent spam. Raw IP
-            addresses are not permanently retained.
+        {/* Privacy Note */}
+        <div className="text-xs text-white/50 leading-relaxed space-y-1 relative z-10">
+          <p>
+            🔒 <strong>Privacy Assurance:</strong> We don&apos;t store your raw IP address. Anonymous submissions hide your identity from the public feed.
           </p>
         </div>
 
-        {/* Action Controls */}
-        <div className="pt-4 border-t border-parchment-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-xs font-mono text-stone-500 flex items-center gap-1">
-            <Lock className="w-3.5 h-3.5 text-stone-400" />
-            <span>TLS-Encrypted Transmission</span>
-          </div>
+        {/* Submit Button */}
+        <div className="pt-2 relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <span className="text-xs font-mono text-white/50">
+            Ready to send to Earth Directorate?
+          </span>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full sm:w-auto px-6 py-2.5 rounded bg-gold-600 hover:bg-gold-500 text-institutional-950 font-serif font-bold text-sm shadow transition-colors flex items-center justify-center gap-2"
+            className="w-full sm:w-auto liquid-btn px-8 py-3 rounded-2xl font-bold text-sm shadow-xl flex items-center justify-center gap-2"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin text-institutional-950" />
-                <span>Entering into Ledger...</span>
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
+                <span>Transmitting Bug Report...</span>
               </>
             ) : (
               <>
-                <CheckCircle2 className="w-4 h-4 text-institutional-950" />
-                <span>Formalize & Transmit Grievance</span>
+                <Send className="w-4 h-4" />
+                <span>Submit Ticket</span>
               </>
             )}
           </button>
