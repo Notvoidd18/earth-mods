@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: earth-mods
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+        # Populate with your Aiven PostgreSQL URL:
+        # postgres://<user>:<password>@<host>:<port>/<dbname>?sslmode=require
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: VOTER_SALT
+        generateValue: true
+      - key: ADMIN_BOOTSTRAP_SECRET
+        generateValue: true
+      - key: INITIAL_ADMIN_USERNAME
+        value: archon_prime
+      - key: INITIAL_ADMIN_EMAIL
+        value: directorate@earthmods.internal
+      - key: INITIAL_ADMIN_PASSWORD
+        sync: false
