@@ -1,58 +1,49 @@
 import Link from "next/link";
-import { Globe2, PlusCircle, ShieldCheck, Flame, Lock } from "lucide-react";
+import { Shield, FileText, BookOpen } from "lucide-react";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-xl bg-emerald-950/50 border-b border-white/10 text-white shadow-glass">
-      {/* Top Humor Ticker Strip */}
-      <div className="bg-emerald-950/80 border-b border-white/10 px-4 py-1.5 text-xs text-white/80">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+    <header className="sticky top-0 z-50 bg-[#142D24] text-[#FFFCF5] border-b border-[#B39A5A]/50 shadow-md">
+      {/* Top Jurisdictional Strip */}
+      <div className="bg-[#0B1914] border-b border-[#244638] px-4 py-1.5 text-xs text-[#E2D9C5]">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-mono text-[11px] uppercase tracking-wider font-semibold text-emerald-300">
-              EARTH SERVER: ONLINE (PATCH 2026.10)
+            <span className="w-2 h-2 rounded-full bg-[#B39A5A] animate-pulse" />
+            <span className="font-mono text-xs tracking-wider uppercase font-semibold">
+              Jurisdiction: Sol-3 / Terran Biome
             </span>
-            <span className="hidden sm:inline text-white/30">•</span>
-            <span className="hidden sm:inline text-white/70 text-[11px]">
-              Active Beta Testers: 8.1 Billion Humans
+            <span className="text-[#3B5D4A]">•</span>
+            <span className="font-mono text-xs text-[#A69B85] hidden sm:inline">
+              Public Docket Series 2026
             </span>
           </div>
-          <div className="flex items-center space-x-4 font-mono text-[11px]">
-            <span className="text-emerald-300 font-medium hidden md:inline">
-              &ldquo;Have you tried turning the weather off and on again?&rdquo;
-            </span>
-            <Link
-              href="/admin"
-              className="text-white/70 hover:text-white transition-colors flex items-center gap-1"
-            >
-              <Lock className="w-3 h-3 text-emerald-400" />
-              <span>Mod Portal</span>
-            </Link>
+          <div className="flex items-center space-x-4 font-mono text-xs text-[#B39A5A] hidden md:flex">
+            <span>&ldquo;A better Earth begins with a formal complaint.&rdquo;</span>
           </div>
         </div>
       </div>
 
-      {/* Main Glassmorphic Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8">
+      {/* Main Navigation Bar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
         <div className="flex items-center justify-between gap-4">
-          {/* Logo & Brand */}
-          <Link href="/" className="flex items-center space-x-3 group">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-700 p-0.5 shadow-liquid-emerald group-hover:scale-105 transition-all duration-300">
-              <div className="w-full h-full rounded-[14px] bg-brand-dark flex items-center justify-center">
-                <Globe2 className="w-6 h-6 text-emerald-400 group-hover:rotate-12 transition-transform duration-300" />
-              </div>
+          {/* Institutional Emblem & Identity */}
+          <Link href="/" className="flex items-center space-x-3.5 group">
+            <div className="w-10 h-10 rounded-sm bg-[#0B1914] border border-[#B39A5A] flex items-center justify-center p-1 shadow-inner group-hover:border-[#C4AC6C] transition-colors">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/planet.png"
+                alt="Planetary Directorate Emblem"
+                width={32}
+                height={32}
+                className="w-8 h-8 object-contain"
+              />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-xl sm:text-2xl tracking-tight text-white">
-                  EARTH <span className="text-emerald-400">MODS</span>
-                </span>
-                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-                  Official Helpdesk
-                </span>
+              <div className="font-serif font-bold text-lg sm:text-xl tracking-tight text-[#FFFCF5] leading-none">
+                Planetary Oversight &amp; Grievance Directorate
               </div>
-              <p className="text-[11px] font-mono tracking-wide text-white/60">
-                Department of Planetary Bug Reports
+              <p className="text-xs font-mono tracking-wider uppercase text-[#E2D9C5] mt-1">
+                EARTH MODS • Sol-3 Registry
               </p>
             </div>
           </Link>
@@ -61,25 +52,25 @@ export function Header() {
           <nav className="flex items-center space-x-2 sm:space-x-3">
             <Link
               href="/"
-              className="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5"
+              className="px-3.5 py-2 rounded text-sm font-sans font-medium text-[#E2D9C5] hover:text-[#FFFCF5] hover:bg-[#244638] transition-colors flex items-center gap-2"
             >
-              <Flame className="w-4 h-4 text-emerald-400" />
-              <span>Public Dockets</span>
+              <BookOpen className="w-4 h-4 text-[#B39A5A]" />
+              <span>Public Register</span>
             </Link>
 
             <Link
               href="/policy"
-              className="hidden md:flex px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all items-center gap-1.5"
+              className="hidden md:flex px-3.5 py-2 rounded text-sm font-sans font-medium text-[#E2D9C5] hover:text-[#FFFCF5] hover:bg-[#244638] transition-colors items-center gap-2"
             >
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Planet Rules</span>
+              <Shield className="w-4 h-4 text-[#B39A5A]" />
+              <span>Charter</span>
             </Link>
 
             <Link
               href="/submit"
-              className="liquid-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-lg transition-all flex items-center gap-1.5"
+              className="btn-gold shadow"
             >
-              <PlusCircle className="w-4 h-4" />
+              <FileText className="w-4 h-4" />
               <span>File a Complaint</span>
             </Link>
           </nav>

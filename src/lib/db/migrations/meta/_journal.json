@@ -8,6 +8,13 @@
       "when": 1792398547325,
       "tag": "0000_watery_wallop",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792406724747,
+      "tag": "0001_clumsy_thundra",
+      "breakpoints": true
     }
   ]
 }

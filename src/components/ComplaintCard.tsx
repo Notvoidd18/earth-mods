@@ -5,8 +5,9 @@ import { CategoryBadge } from "./CategoryBadge";
 import { StatusBadge } from "./StatusBadge";
 import { VoteButtons } from "./VoteButtons";
 import { ReportModal } from "./ReportModal";
-import { Share2, Check, Sparkles } from "lucide-react";
+import { Share2, Check, Scale } from "lucide-react";
 import { useState } from "react";
+import { getCitizenPfp } from "@/lib/pfp";
 
 export interface ComplaintCardData {
   id: string;
@@ -31,6 +32,7 @@ interface ComplaintCardProps {
 
 export function ComplaintCard({ complaint }: ComplaintCardProps) {
   const [copied, setCopied] = useState(false);
+  const pfp = getCitizenPfp(complaint.authorName || complaint.id || complaint.caseNumber);
 
   const formattedDate = new Date(complaint.createdAt).toLocaleDateString("en-US", {
     month: "short",
@@ -53,100 +55,92 @@ export function ComplaintCard({ complaint }: ComplaintCardProps) {
   };
 
   return (
-    <article className="glass-card rounded-3xl p-5 sm:p-6 flex flex-col justify-between relative overflow-hidden group">
-      {/* Background liquid glow on hover */}
-      <div className="absolute top-0 right-0 w-36 h-36 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-emerald-400/20 transition-all duration-300" />
-
-      {/* Top Meta Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono mb-3">
-        <div className="flex items-center space-x-2">
-          <Link
-            href={`/complaints/${complaint.caseNumber}`}
-            className="font-bold text-emerald-300 hover:text-white transition-colors"
-          >
-            #{complaint.caseNumber}
-          </Link>
-          <span className="text-white/30">•</span>
-          <span className="text-white/50">{formattedDate}</span>
-        </div>
-        <div>
-          <StatusBadge status={complaint.status} size="sm" />
-        </div>
-      </div>
-
-      {/* Card Content with Voting */}
-      <div className="flex gap-4 my-2">
-        {/* Voting Sidebar */}
-        <div className="shrink-0 pt-0.5">
-          <VoteButtons
-            complaintId={complaint.id}
-            initialScore={complaint.score}
-            initialUpvotes={complaint.upvotesCount}
-            initialDownvotes={complaint.downvotesCount}
-            orientation="vertical"
-          />
-        </div>
-
-        {/* Complaint Text */}
-        <div className="flex-1 min-w-0 space-y-2.5">
-          <div>
-            <CategoryBadge category={complaint.category} size="sm" />
+    <article className="surface-parchment rounded-xl p-6 flex flex-col justify-between transition-all duration-200 hover:border-[#3B5D4A] hover:shadow-lg group">
+      {/* Top Header */}
+      <div>
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono mb-3.5 pb-2.5 border-b border-[#DCD4C3]">
+          <div className="flex items-center space-x-2.5">
+            <div
+              className="w-6 h-6 rounded-full overflow-hidden shadow-xs shrink-0"
+              style={{ background: pfp.bgGradient, border: `1px solid ${pfp.borderColor}` }}
+              title={pfp.label}
+              dangerouslySetInnerHTML={{ __html: pfp.svg }}
+            />
+            <Link
+              href={`/complaints/${complaint.caseNumber}`}
+              className="font-bold text-[#142D24] hover:text-[#3B5D4A] transition-colors"
+            >
+              #{complaint.caseNumber}
+            </Link>
+            <span className="text-[#C2B69F]">•</span>
+            <span className="text-[#6D7065]">{formattedDate}</span>
+            <span className="text-[#C2B69F]">•</span>
+            <span>🌐 Sol-3</span>
           </div>
+          <div>
+            <StatusBadge status={complaint.status} size="sm" />
+          </div>
+        </div>
 
-          <h3 className="font-bold text-base sm:text-lg text-white leading-snug group-hover:text-emerald-200 transition-colors">
+        {/* Category & Title */}
+        <div className="space-y-2 mb-3">
+          <CategoryBadge category={complaint.category} size="sm" />
+          <h3 className="font-serif font-bold text-lg text-[#142D24] leading-snug group-hover:text-[#244638] transition-colors">
             <Link href={`/complaints/${complaint.caseNumber}`} className="hover:underline">
               {complaint.title}
             </Link>
           </h3>
-
-          <p className="text-white/80 text-sm leading-relaxed line-clamp-3">
-            {complaint.description}
-          </p>
-
-          {/* Official Moderator Verdict Bubble */}
-          {complaint.verdict && (
-            <div className="mt-3 p-3.5 rounded-2xl bg-emerald-950/70 border border-emerald-400/30 text-xs text-white space-y-1 shadow-inner">
-              <div className="flex items-center justify-between font-mono font-semibold text-[11px] text-emerald-300">
-                <span className="flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  Official Earth Mods Response
-                </span>
-                {complaint.verdictBy && (
-                  <span className="text-white/60 font-normal truncate max-w-[160px]">
-                    {complaint.verdictBy}
-                  </span>
-                )}
-              </div>
-              <p className="text-white/90 italic pl-1 border-l border-emerald-400/40 line-clamp-2">
-                &ldquo;{complaint.verdict}&rdquo;
-              </p>
-            </div>
-          )}
         </div>
+
+        {/* Complaint Text */}
+        <p className="text-[#4A4E45] text-sm leading-relaxed line-clamp-3 font-sans mb-4">
+          {complaint.description}
+        </p>
+
+        {/* Directorate Verdict / Ruling Box */}
+        {complaint.verdict && (
+          <div className="mb-4 p-4 rounded bg-[#EBF2EE] border-l-3 border-[#244638] text-xs text-[#1E231B] space-y-1">
+            <div className="flex items-center justify-between font-mono font-semibold text-xs text-[#142D24]">
+              <span className="flex items-center gap-1.5 uppercase tracking-wider">
+                <Scale className="w-3.5 h-3.5 text-[#244638]" />
+                Directorate Decree
+              </span>
+              {complaint.verdictBy && (
+                <span className="text-[#6D7065] font-normal truncate max-w-[160px]">
+                  {complaint.verdictBy}
+                </span>
+              )}
+            </div>
+            <p className="text-[#142D24] font-serif italic line-clamp-2">
+              &ldquo;{complaint.verdict}&rdquo;
+            </p>
+          </div>
+        )}
       </div>
 
-      {/* Bottom Footer Bar */}
-      <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-white/50">
-        <div className="font-mono text-[11px] truncate max-w-[200px]">
-          <span>Reported by: </span>
-          <span className="text-white/80 font-medium">
-            {complaint.isAnonymous || !complaint.authorName
-              ? "Anonymous Citizen"
-              : complaint.authorName}
-          </span>
-        </div>
+      {/* Bottom Actions Bar */}
+      <div className="pt-3 border-t border-[#DCD4C3] flex items-center justify-between gap-3 text-xs">
+        {/* Voting Controls */}
+        <VoteButtons
+          complaintId={complaint.id}
+          initialScore={complaint.score}
+          initialUpvotes={complaint.upvotesCount}
+          initialDownvotes={complaint.downvotesCount}
+          orientation="horizontal"
+        />
 
-        <div className="flex items-center space-x-3">
+        {/* Share & Report */}
+        <div className="flex items-center space-x-3 text-[#6D7065]">
           <button
             type="button"
             onClick={handleShare}
-            className="text-[11px] font-mono text-white/60 hover:text-white transition-colors flex items-center gap-1"
-            title="Copy share link"
+            className="hover:text-[#142D24] transition-colors flex items-center gap-1 font-mono text-xs"
+            title="Copy docket link"
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-300 font-semibold">Copied!</span>
+                <Check className="w-3.5 h-3.5 text-[#244638]" />
+                <span className="text-[#244638] font-bold">Copied</span>
               </>
             ) : (
               <>
@@ -156,7 +150,7 @@ export function ComplaintCard({ complaint }: ComplaintCardProps) {
             )}
           </button>
 
-          <span className="text-white/20">|</span>
+          <span className="text-[#DCD4C3]">|</span>
 
           <ReportModal complaintId={complaint.id} caseNumber={complaint.caseNumber} />
         </div>

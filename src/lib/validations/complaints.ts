@@ -21,6 +21,12 @@ export const createComplaintSchema = z.object({
     .max(60, { message: "Citizen moniker cannot exceed 60 characters." })
     .optional()
     .transform((val) => (val && val.length > 0 ? val : undefined)),
+  countryCode: z
+    .string()
+    .trim()
+    .max(10, { message: "Country code cannot exceed 10 characters." })
+    .optional(),
+  turnstileToken: z.string().optional(),
   isAnonymous: z.boolean().default(true),
 });
 
@@ -69,7 +75,10 @@ export type UpdateComplaintStatusInput = z.infer<typeof updateComplaintStatusSch
 
 export const loginSchema = z.object({
   username: z.string().trim().min(3, "Username must be at least 3 characters."),
-  password: z.string().min(8, "Security passphrase must be at least 8 characters."),
+  password: z
+    .string()
+    .min(12, "Security passphrase must be at least 12 characters.")
+    .max(128, "Security passphrase cannot exceed 128 characters."),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;

@@ -45,6 +45,8 @@ Create a `.env` file in the project root based on `.env.example`:
 
 | Variable | Required | Description | Example |
 |---|---|---|---|
+| `SITE_URL` | **Yes (Prod)** | Canonical public production URL (must be HTTPS; no trailing slash). | `https://your-production-domain.example` |
+| `SEO_INDEXING_ENABLED` | **Yes (Prod)** | Set to `"true"` ONLY on verified production domain; keep `"false"` for preview/dev. | `false` |
 | `DATABASE_URL` | **Yes** | Aiven PostgreSQL connection URI with TLS enforcement (`?sslmode=require`). | `postgres://avnadmin:pass@pg-earth-mods.aivencloud.com:15432/defaultdb?sslmode=require` |
 | `SESSION_SECRET` | **Yes** | Cryptographic key for moderator session hashing (min 32 chars). | `b3f8a9d12e456789...` |
 | `VOTER_SALT` | **Yes** | Server-side cryptographic salt for hashing voter identity tokens. | `e98c71a39f02...` |
@@ -138,6 +140,8 @@ Deploying EARTH MODS as a production Web Service on Render takes less than 3 min
    - **Health Check Path**: `/api/health`
 5. In the **Environment Variables** section, add:
    - `NODE_ENV`: `production`
+   - `SITE_URL`: `https://earth-mods.onrender.com` *(or your custom canonical domain)*
+   - `SEO_INDEXING_ENABLED`: `true` *(or keep `false` until custom domain DNS is linked)*
    - `DATABASE_URL`: `postgres://avnadmin:YOUR_PASSWORD@YOUR_HOST:PORT/defaultdb?sslmode=require`
    - `SESSION_SECRET`: *(Click 'Generate' or enter 32+ random characters)*
    - `VOTER_SALT`: *(Click 'Generate' or enter 32+ random characters)*
@@ -172,3 +176,40 @@ Deploying EARTH MODS as a production Web Service on Render takes less than 3 min
   ```bash
   pg_restore -d "postgres://avnadmin:pass@host:port/defaultdb?sslmode=require" --clean earth_mods_backup.dump
   ```
+
+---
+
+## 9. SEO, XML Sitemap & Robots Specification
+
+- **Canonical Origin**: Governed strictly by `SITE_URL`. Trailing slashes are normalized; `localhost` is rejected as a production canonical origin.
+- **Sitemap Discovery**: Accessible at `https://YOUR_CONFIGURED_DOMAIN/sitemap.xml`.
+  - Automatically queries the active PostgreSQL database ledger for eligible public complaint dockets.
+  - Generates stable canonical URLs (`/complaints/[caseNumber]`) with verified database `lastModified` timestamps.
+  - Automatically handles database unavailability gracefully without crashing the sitemap.
+  - Implements safety thresholding: standard limit is 50,000 URLs; Next.js `generateSitemaps()` chunking is recommended if public dockets exceed 45,000 entries.
+  - Excludes administrative, authentication, and filing transaction workflows (`/admin`, `/admin/login`, `/submit`).
+- **Robots Directives**: Served at `https://YOUR_CONFIGURED_DOMAIN/robots.txt`.
+  - Governed by `SEO_INDEXING_ENABLED`.
+  - When `SEO_INDEXING_ENABLED=false` (development, staging, preview branches): crawler access is disallowed (`Disallow: /`) to prevent indexing collisions.
+  - When `SEO_INDEXING_ENABLED=true` (canonical production): crawler access is allowed for public content (`Allow: /`) and disallowed for `/admin/` and `/api/`.
+- **Metadata & Previews**:
+  - Implements the Next.js Metadata API with `metadataBase`.
+  - Per-page unique titles, meta descriptions, and canonical links.
+  - OpenGraph & Twitter Large Image cards generated dynamically at `/opengraph-image` (1200×630) using the Directorate seal, typography, and color palette.
+  - Schema.org JSON-LD structured data for the Website and individual complaint articles.
+  - Administrative and authentication routes explicitly enforce `robots: { index: false, follow: false, nocache: true }`.
+
+---
+
+## 10. Software License & Intellectual Property Scope
+
+This software is released under the **MIT License**. See the root [`LICENSE`](LICENSE) file for the full legal text.
+
+### Scope of License:
+1. **Source Code**: The MIT License applies to the original application source code, components, API routes, database schemas, and documentation created for the EARTH MODS repository.
+2. **User Submissions**: The software license does **not** grant ownership of user-submitted complaints, citizen comments, or forum postings, which remain the expression of their respective submitters or subject to the satirical Terms of Public Record.
+3. **Brand Identity & Creative Assets**: The names "EARTH MODS", "Planetary Oversight & Grievance Directorate", custom vector seals (`earthlogo.icon`), and associated satirical lore are part of the product's creative identity. Third-party adoption of the source code should replace or customize institutional branding appropriately.
+4. **Third-Party Dependencies**: All external packages and libraries listed in `package.json` (such as Next.js, React, Tailwind CSS, Drizzle ORM, Lucide, Cobe, etc.) remain subject to their respective open-source copyright notices and licenses.
+5. **Launch Action Item**: The `LICENSE` file contains a copyright-holder placeholder:
+   `Copyright (c) 2026 [EARTH MODS Contributors / Project Owner - CONFIRM LEGAL ENTITY BEFORE LAUNCH]`
+   The project owner should replace this placeholder with their legal name or entity prior to public launch.

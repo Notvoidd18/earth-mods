@@ -60,6 +60,7 @@ export const complaints = pgTable(
     description: text("description").notNull(),
     category: varchar("category", { length: 64 }).notNull(),
     authorName: varchar("author_name", { length: 60 }),
+    countryCode: varchar("country_code", { length: 10 }).default("GLOBAL"),
     isAnonymous: boolean("is_anonymous").default(true).notNull(),
     status: varchar("status", { length: 32 }).default("PENDING_REVIEW").notNull(),
     verdict: text("verdict"),
@@ -170,10 +171,60 @@ export const auditLogs = pgTable(
   (table) => [index("idx_audit_logs_created_at").on(table.createdAt)]
 );
 
+// 7. Announcements / Directorate Bulletins Table
+export const announcements = pgTable(
+  "announcements",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    title: varchar("title", { length: 200 }).notNull(),
+    content: text("content").notNull(),
+    category: varchar("category", { length: 64 }).default("DIRECTIVE").notNull(),
+    isPublished: boolean("is_published").default(true).notNull(),
+    authorName: varchar("author_name", { length: 100 }).default("Directorate General"),
+    priority: integer("priority").default(0).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_announcements_published").on(table.isPublished),
+    index("idx_announcements_priority").on(table.priority),
+    index("idx_announcements_created_at").on(table.createdAt),
+  ]
+);
+
+// 8. Emergency Planetary Sessions (Crisis Dockets)
+export const planetaryCrises = pgTable(
+  "planetary_crises",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    complaintId: uuid("complaint_id")
+      .references(() => complaints.id, { onDelete: "cascade" })
+      .notNull(),
+    emergencyDecree: text("emergency_decree").notNull(),
+    severity: varchar("severity", { length: 32 }).default("CLASS_1_EXISTENTIAL").notNull(),
+    declaredBy: varchar("declared_by", { length: 100 }).notNull(),
+    isActive: boolean("is_active").default(true).notNull(),
+    declaredAt: timestamp("declared_at", { withTimezone: true }).defaultNow().notNull(),
+    resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+  },
+  (table) => [
+    index("idx_crises_active").on(table.isActive),
+    index("idx_crises_complaint").on(table.complaintId),
+  ]
+);
+
 // Relational Definitions
 export const complaintsRelations = relations(complaints, ({ many }) => ({
   votes: many(votes),
   reports: many(reports),
+  crises: many(planetaryCrises),
+}));
+
+export const planetaryCrisesRelations = relations(planetaryCrises, ({ one }) => ({
+  complaint: one(complaints, {
+    fields: [planetaryCrises.complaintId],
+    references: [complaints.id],
+  }),
 }));
 
 export const votesRelations = relations(votes, ({ one }) => ({
@@ -208,3 +259,4 @@ export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
     references: [moderators.id],
   }),
 }));
+

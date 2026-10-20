@@ -9,22 +9,39 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: "#ecfdf5",
-          100: "#d1fae5",
-          200: "#a7f3d0",
-          300: "#6ee7b7",
-          400: "#34d399",
-          500: "#10b981", // vibrant emerald green
-          600: "#059669",
-          700: "#047857",
-          800: "#065f46",
-          900: "#064e3b",
-          950: "#022c22",
-          dark: "#031710", // ultra deep liquid green background
+        institutional: {
+          deep: "#142D24",       // Deep forest green
+          primary: "#244638",    // Primary forest green
+          secondary: "#3B5D4A",  // Secondary forest green
+          accent: "#4D735C",     // Medium institutional green
+          tint: "#E6ECE8",       // Very light sage wash
+        },
+        parchment: {
+          50: "#FFFCF5",         // Pure archival paper
+          100: "#F7F3E9",        // Warm archival parchment
+          200: "#EFE9DA",        // Docket background
+          300: "#E2D9C5",        // Aged docket paper
+          border: "#DCD4C3",     // Crisp institutional border
+          darkborder: "#C2B69F", // Accent docket border
+        },
+        ink: {
+          900: "#242820",        // Primary reading ink
+          700: "#444840",        // Secondary institutional ink
+          500: "#6D7065",        // Muted archival note ink
+          300: "#9A9E94",        // Faint border ink
+        },
+        gold: {
+          500: "#C4AC6C",
+          600: "#B39A5A",        // Directorate aged gold
+          700: "#8F773B",
+        },
+        seal: {
+          red: "#8B302B",        // Official Directorate seal red
+          redtint: "#FBEBEA",
         },
       },
       fontFamily: {
+        serif: ["Georgia", "Cambria", "'Times New Roman'", "Times", "serif"],
         sans: [
           "-apple-system",
           "BlinkMacSystemFont",
@@ -46,27 +63,9 @@ const config: Config = {
         ],
       },
       boxShadow: {
-        glass: "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
-        "glass-sm": "0 4px 16px 0 rgba(0, 0, 0, 0.25)",
-        "glass-hover": "0 12px 40px 0 rgba(16, 185, 129, 0.25)",
-        "liquid-glow": "0 0 50px -10px rgba(16, 185, 129, 0.5)",
-        "liquid-emerald": "0 0 30px rgba(52, 211, 153, 0.35)",
-      },
-      animation: {
-        "float-slow": "float 8s ease-in-out infinite",
-        "float-reverse": "floatReverse 10s ease-in-out infinite",
-        "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "spin-slow": "spin 25s linear infinite",
-      },
-      keyframes: {
-        float: {
-          "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
-          "50%": { transform: "translateY(-16px) rotate(2deg)" },
-        },
-        floatReverse: {
-          "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
-          "50%": { transform: "translateY(16px) rotate(-2deg)" },
-        },
+        docket: "0 1px 3px rgba(36, 40, 32, 0.06), 0 1px 2px rgba(36, 40, 32, 0.04)",
+        "docket-lg": "0 10px 25px -5px rgba(20, 45, 36, 0.1), 0 8px 10px -6px rgba(20, 45, 36, 0.06)",
+        seal: "0 0 0 2px #8B302B, 0 4px 12px rgba(139, 48, 43, 0.15)",
       },
     },
   },

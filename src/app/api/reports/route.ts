@@ -2,13 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { complaints, reports } from "@/lib/db/schema";
 import { createReportSchema } from "@/lib/validations/complaints";
-import { getOrCreateVoterToken } from "@/lib/security/auth";
+import { getOrCreateVoterToken, validateRequestOrigin } from "@/lib/security/auth";
 import { hashVoterToken, checkRateLimit } from "@/lib/security/token";
 import { eq, sql } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
+  if (!validateRequestOrigin(req)) {
+    return NextResponse.json({ error: "Cross-origin report rejected." }, { status: 403 });
+  }
+
   if (!db) {
     return NextResponse.json(
       { error: "Database offline. Reporting service temporarily unavailable." },

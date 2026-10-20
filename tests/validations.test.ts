@@ -152,12 +152,31 @@ describe("Validation Suite: EARTH MODS", () => {
       expect(loginSchema.safeParse(valid).success).toBe(true);
     });
 
-    it("rejects short passwords", () => {
+    it("rejects passwords shorter than 12 characters", () => {
       const invalid = {
         username: "archon_prime",
-        password: "123",
+        password: "short_pass1", // 11 characters
       };
-      expect(loginSchema.safeParse(invalid).success).toBe(false);
+      const res = loginSchema.safeParse(invalid);
+      expect(res.success).toBe(false);
+    });
+
+    it("accepts passwords with exactly 12 characters", () => {
+      const valid = {
+        username: "archon_prime",
+        password: "exactly_12ch", // 12 characters
+      };
+      const res = loginSchema.safeParse(valid);
+      expect(res.success).toBe(true);
+    });
+
+    it("rejects passwords exceeding 128 characters", () => {
+      const invalid = {
+        username: "archon_prime",
+        password: "a".repeat(129),
+      };
+      const res = loginSchema.safeParse(invalid);
+      expect(res.success).toBe(false);
     });
   });
 

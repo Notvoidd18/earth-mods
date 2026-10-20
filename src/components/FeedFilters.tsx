@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { Search, RotateCcw, Flame, Trophy, Clock, Filter, Sparkles } from "lucide-react";
+import { Search, RotateCcw, TrendingUp, Trophy, Clock, Filter } from "lucide-react";
 import { CATEGORIES, COMPLAINT_STATUSES } from "@/lib/db/schema";
 import { CATEGORY_METADATA } from "./CategoryBadge";
 import { useState, useTransition } from "react";
@@ -46,7 +46,7 @@ export function FeedFilters() {
     Boolean(currentCategory) || Boolean(currentStatus) || Boolean(searchParams.get("search"));
 
   return (
-    <div className="glass-panel rounded-3xl p-4 sm:p-6 shadow-glass border border-white/15 space-y-4 mb-8">
+    <div className="archival-card rounded-[2px] p-4 sm:p-5 mb-8 border border-[#DCD4C3] space-y-4">
       {/* Search and Sort Row */}
       <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
         {/* Search Input */}
@@ -55,53 +55,53 @@ export function FeedFilters() {
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search bugs (e.g. mosquito, gravity, lower back, EM-2026)..."
-            className="w-full text-xs sm:text-sm pl-10 pr-20 py-2.5 rounded-2xl glass-input placeholder:text-white/40 focus:outline-none"
+            placeholder="Search register (e.g. gravity, mosquito, EM-2026)..."
+            className="w-full text-xs sm:text-sm pl-9 pr-24 py-2 archival-input placeholder:text-[#6D7065] focus:outline-none"
           />
-          <Search className="w-4 h-4 text-emerald-400 absolute left-3.5 top-3" />
+          <Search className="w-4 h-4 text-[#6D7065] absolute left-3 top-2.5" />
           <button
             type="submit"
-            className="absolute right-1.5 top-1.5 px-3 py-1 bg-emerald-500 hover:bg-emerald-400 text-brand-dark text-xs font-bold rounded-xl transition-colors"
+            className="absolute right-1 top-1 px-3 py-1 bg-[#142D24] text-[#FFFCF5] hover:bg-[#244638] text-xs font-mono font-bold rounded-[2px] transition-colors uppercase tracking-wider"
           >
-            Find Bug
+            Locate
           </button>
         </form>
 
-        {/* Sort Pills */}
-        <div className="flex items-center space-x-1.5 p-1 rounded-2xl bg-white/5 border border-white/10 shrink-0">
+        {/* Sort Buttons */}
+        <div className="flex items-center space-x-1 p-1 bg-[#F7F3E9] border border-[#DCD4C3] rounded-[2px] shrink-0">
           <button
             type="button"
             onClick={() => updateParam("sort", "trending")}
-            className={`px-3 py-1.5 text-xs font-mono font-medium rounded-xl flex items-center gap-1.5 transition-all ${
+            className={`px-3 py-1 text-xs font-mono font-medium rounded-[2px] flex items-center gap-1.5 transition-all ${
               currentSort === "trending"
-                ? "bg-emerald-500 text-brand-dark font-bold shadow-liquid-emerald"
-                : "text-white/70 hover:text-white"
+                ? "bg-[#244638] text-[#FFFCF5] font-bold shadow-xs"
+                : "text-[#6D7065] hover:text-[#242820]"
             }`}
           >
-            <Flame className="w-3.5 h-3.5" />
-            <span>Trending</span>
+            <TrendingUp className="w-3.5 h-3.5" />
+            <span>Priority</span>
           </button>
 
           <button
             type="button"
             onClick={() => updateParam("sort", "top")}
-            className={`px-3 py-1.5 text-xs font-mono font-medium rounded-xl flex items-center gap-1.5 transition-all ${
+            className={`px-3 py-1 text-xs font-mono font-medium rounded-[2px] flex items-center gap-1.5 transition-all ${
               currentSort === "top"
-                ? "bg-emerald-500 text-brand-dark font-bold shadow-liquid-emerald"
-                : "text-white/70 hover:text-white"
+                ? "bg-[#244638] text-[#FFFCF5] font-bold shadow-xs"
+                : "text-[#6D7065] hover:text-[#242820]"
             }`}
           >
             <Trophy className="w-3.5 h-3.5" />
-            <span>Top Voted</span>
+            <span>Top Concurred</span>
           </button>
 
           <button
             type="button"
             onClick={() => updateParam("sort", "new")}
-            className={`px-3 py-1.5 text-xs font-mono font-medium rounded-xl flex items-center gap-1.5 transition-all ${
+            className={`px-3 py-1 text-xs font-mono font-medium rounded-[2px] flex items-center gap-1.5 transition-all ${
               currentSort === "new"
-                ? "bg-emerald-500 text-brand-dark font-bold shadow-liquid-emerald"
-                : "text-white/70 hover:text-white"
+                ? "bg-[#244638] text-[#FFFCF5] font-bold shadow-xs"
+                : "text-[#6D7065] hover:text-[#242820]"
             }`}
           >
             <Clock className="w-3.5 h-3.5" />
@@ -110,24 +110,24 @@ export function FeedFilters() {
         </div>
       </div>
 
-      {/* Filter Selectors Row */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-white/10">
-        <div className="flex flex-wrap items-center gap-2.5">
-          <div className="flex items-center gap-1 text-xs font-mono text-emerald-300">
-            <Filter className="w-3.5 h-3.5" />
-            <span>Filter:</span>
-          </div>
+      {/* Categories and Status Filter Row */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 border-t border-[#DCD4C3] text-xs font-mono">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[#6D7065] uppercase tracking-wider flex items-center gap-1 font-bold">
+            <Filter className="w-3 h-3" />
+            Filter:
+          </span>
 
           {/* Category Dropdown */}
           <select
             value={currentCategory}
-            onChange={(e) => updateParam("category", e.target.value || null)}
-            aria-label="Filter by bug category"
-            className="text-xs font-mono rounded-xl glass-input px-3 py-1.5 text-white focus:outline-none"
+            onChange={(e) => updateParam("category", e.target.value)}
+            className="archival-input text-xs py-1 px-2.5"
+            aria-label="Filter by Substrate Domain"
           >
-            <option value="" className="bg-brand-dark text-white">All Earth Categories</option>
+            <option value="">All Substrate Domains</option>
             {CATEGORIES.map((cat) => (
-              <option key={cat} value={cat} className="bg-brand-dark text-white">
+              <option key={cat} value={cat}>
                 {CATEGORY_METADATA[cat]?.label || cat}
               </option>
             ))}
@@ -136,37 +136,37 @@ export function FeedFilters() {
           {/* Status Dropdown */}
           <select
             value={currentStatus}
-            onChange={(e) => updateParam("status", e.target.value || null)}
-            aria-label="Filter by mod status"
-            className="text-xs font-mono rounded-xl glass-input px-3 py-1.5 text-white focus:outline-none"
+            onChange={(e) => updateParam("status", e.target.value)}
+            className="archival-input text-xs py-1 px-2.5"
+            aria-label="Filter by Adjudication Status"
           >
-            <option value="" className="bg-brand-dark text-white">All Mod Statuses</option>
+            <option value="">All Filing Statuses</option>
             {COMPLAINT_STATUSES.map((st) => (
-              <option key={st} value={st} className="bg-brand-dark text-white">
+              <option key={st} value={st}>
                 {st.replace(/_/g, " ")}
               </option>
             ))}
           </select>
-
-          {hasActiveFilters && (
-            <button
-              type="button"
-              onClick={handleClearFilters}
-              className="text-xs font-mono text-rose-300 hover:text-rose-200 flex items-center gap-1 px-2.5 py-1 rounded-xl bg-rose-500/20 border border-rose-500/30 transition-colors"
-            >
-              <RotateCcw className="w-3 h-3" />
-              <span>Reset</span>
-            </button>
-          )}
         </div>
 
-        {isPending && (
-          <span className="text-[11px] font-mono text-emerald-400 animate-pulse flex items-center gap-1">
-            <Sparkles className="w-3 h-3" />
-            <span>Loading Earth Archive...</span>
-          </span>
+        {/* Clear Filters Button */}
+        {hasActiveFilters && (
+          <button
+            type="button"
+            onClick={handleClearFilters}
+            className="text-[11px] font-mono text-[#8B302B] hover:underline flex items-center gap-1 self-start sm:self-auto"
+          >
+            <RotateCcw className="w-3 h-3" />
+            <span>Reset Ledger Filters</span>
+          </button>
         )}
       </div>
+
+      {isPending && (
+        <div className="text-[11px] font-mono text-[#244638] animate-pulse">
+          Filtering Directorate register records...
+        </div>
+      )}
     </div>
   );
 }

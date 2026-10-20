@@ -5,6 +5,7 @@
   "description": "EARTH MODS - The Official Fictional Planetary Government Complaints Department",
   "scripts": {
     "dev": "next dev",
+    "clean": "node -e \"const fs=require('fs');try{fs.rmSync('.next',{recursive:true,force:true})}catch(e){}\"",
     "build": "next build",
     "start": "next start -H 0.0.0.0",
     "lint": "eslint .",
@@ -19,6 +20,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
+    "cobe": "^2.0.1",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.39.3",
     "lucide-react": "^0.475.0",

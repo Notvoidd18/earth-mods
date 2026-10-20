@@ -1,247 +1,140 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Bug, Compass } from "lucide-react";
+import { useState } from "react";
+import Link from "next/link";
+import { Globe, GlobeMarkerData } from "@/components/ui/globe";
+import { Compass, Scale, ExternalLink, MapPin, X } from "lucide-react";
+import { getCountryFlag } from "@/lib/geo";
 
-export function EarthGlobe() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [scrollRotation, setScrollRotation] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+export interface GlobeComplaintMarker {
+  id: string;
+  caseNumber: string;
+  title: string;
+  category: string;
+  status: string;
+  countryCode?: string;
+  lat: number;
+  lon: number;
+}
 
-  useEffect(() => {
-    const handleScroll = () => {
-      // Rotate the earth based on scroll distance
-      const scrollY = window.scrollY;
-      setScrollRotation(scrollY * 0.006);
-    };
+interface EarthGlobeProps {
+  markers?: GlobeComplaintMarker[];
+  activeCaseNumber?: string;
+  onMarkerSelect?: (marker: GlobeComplaintMarker) => void;
+}
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+export function EarthGlobe({
+  markers = [],
+  activeCaseNumber,
+  onMarkerSelect,
+}: EarthGlobeProps) {
+  const [selectedMarker, setSelectedMarker] = useState<GlobeComplaintMarker | null>(null);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  // Convert markers to Cobe Globe format
+  const cobeMarkers: GlobeMarkerData[] = markers.map((m) => ({
+    location: [m.lat, m.lon],
+    size: 0.08,
+    complaint: {
+      id: m.id,
+      caseNumber: m.caseNumber,
+      title: m.title,
+      category: m.category,
+      status: m.status,
+      countryCode: m.countryCode,
+    },
+  }));
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let baseAngle = 0;
-
-    // Approximate simplified polygon landmasses for the globe
-    const landmasses = [
-      // North America
-      [[-120, 50], [-100, 60], [-75, 55], [-70, 40], [-80, 25], [-105, 20], [-115, 32], [-125, 48]],
-      // South America
-      [[-75, 10], [-50, -5], [-35, -10], [-55, -30], [-70, -50], [-75, -20]],
-      // Eurasia & Europe
-      [[-10, 40], [10, 55], [30, 60], [60, 65], [100, 60], [130, 50], [120, 30], [80, 25], [40, 35], [10, 36]],
-      // Africa
-      [[-15, 30], [10, 35], [35, 30], [45, 10], [30, -30], [20, -32], [10, 5]],
-      // Australia
-      [[115, -20], [140, -18], [150, -30], [135, -35], [120, -30]],
-      // India / South Asia
-      [[70, 25], [85, 22], [80, 10]],
-    ];
-
-    const render = () => {
-      // Incremental idle rotation + scroll-linked rotation
-      baseAngle += isHovered ? 0.002 : 0.005;
-      const currentAngle = baseAngle + scrollRotation;
-
-      const width = canvas.width;
-      const height = canvas.height;
-      const radius = width * 0.42;
-      const cx = width / 2;
-      const cy = height / 2;
-
-      ctx.clearRect(0, 0, width, height);
-
-      // 1. Atmosphere Outer Glow (Liquid Emerald Halo)
-      const glowGrad = ctx.createRadialGradient(cx, cy, radius * 0.85, cx, cy, radius * 1.25);
-      glowGrad.addColorStop(0, "rgba(52, 211, 153, 0.4)");
-      glowGrad.addColorStop(0.5, "rgba(16, 185, 129, 0.15)");
-      glowGrad.addColorStop(1, "rgba(2, 44, 34, 0)");
-      ctx.fillStyle = glowGrad;
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius * 1.25, 0, Math.PI * 2);
-      ctx.fill();
-
-      // 2. Deep Liquid Ocean Base (Sphere)
-      const oceanGrad = ctx.createRadialGradient(
-        cx - radius * 0.35,
-        cy - radius * 0.35,
-        radius * 0.1,
-        cx,
-        cy,
-        radius
-      );
-      oceanGrad.addColorStop(0, "#0d5c3f");
-      oceanGrad.addColorStop(0.4, "#064e3b");
-      oceanGrad.addColorStop(0.85, "#022c22");
-      oceanGrad.addColorStop(1, "#011c15");
-
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-      ctx.clip(); // Clip everything to the sphere
-
-      ctx.fillStyle = oceanGrad;
-      ctx.fill();
-
-      // 3. Grid Latitude / Longitude lines
-      ctx.strokeStyle = "rgba(52, 211, 153, 0.12)";
-      ctx.lineWidth = 1;
-
-      // Parallels (Latitudes)
-      for (let lat = -60; lat <= 60; lat += 30) {
-        const y = cy - Math.sin((lat * Math.PI) / 180) * radius;
-        const rSub = Math.cos((lat * Math.PI) / 180) * radius;
-        ctx.beginPath();
-        ctx.ellipse(cx, y, rSub, rSub * 0.28, 0, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-
-      // Meridians (Longitudes)
-      for (let lon = 0; lon < 360; lon += 45) {
-        const radLon = ((lon * Math.PI) / 180) + currentAngle;
-        const cosLon = Math.cos(radLon);
-
-        if (cosLon > -0.2) {
-          ctx.beginPath();
-          ctx.ellipse(cx, cy, Math.abs(cosLon) * radius, radius, 0, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-      }
-
-      // 4. Render Landmasses with 3D Orthographic projection
-      ctx.fillStyle = "rgba(52, 211, 153, 0.85)";
-      ctx.shadowColor = "rgba(52, 211, 153, 0.4)";
-      ctx.shadowBlur = 8;
-
-      for (const poly of landmasses) {
-        ctx.beginPath();
-        let first = true;
-        let visibleCount = 0;
-
-        for (const [degLon, degLat] of poly) {
-          const lonRad = ((degLon * Math.PI) / 180) + currentAngle;
-          const latRad = (degLat * Math.PI) / 180;
-
-          // 3D coordinates on unit sphere
-          const x3d = Math.cos(latRad) * Math.sin(lonRad);
-          const y3d = Math.sin(latRad);
-          const z3d = Math.cos(latRad) * Math.cos(lonRad);
-
-          // Only render visible points on the front hemisphere
-          if (z3d > -0.15) {
-            visibleCount++;
-            const projX = cx + x3d * radius;
-            const projY = cy - y3d * radius;
-
-            if (first) {
-              ctx.moveTo(projX, projY);
-              first = false;
-            } else {
-              ctx.lineTo(projX, projY);
-            }
-          }
-        }
-
-        if (visibleCount >= 2) {
-          ctx.closePath();
-          ctx.fill();
-        }
-      }
-
-      // 5. Cloud Swirl Highlights (Liquid white translucent wisps)
-      ctx.shadowBlur = 0;
-      ctx.fillStyle = "rgba(255, 255, 255, 0.15)";
-      for (let i = 0; i < 3; i++) {
-        const cloudAngle = currentAngle * 1.2 + i * 2.1;
-        const cloudX = cx + Math.sin(cloudAngle) * radius * 0.6;
-        const cloudY = cy + Math.sin(cloudAngle * 0.8) * radius * 0.4;
-        ctx.beginPath();
-        ctx.ellipse(cloudX, cloudY, radius * 0.4, radius * 0.08, cloudAngle * 0.3, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // 6. Glassmorphic Surface Reflection Sheen
-      const sheenGrad = ctx.createLinearGradient(cx - radius, cy - radius, cx + radius, cy + radius);
-      sheenGrad.addColorStop(0, "rgba(255, 255, 255, 0.35)");
-      sheenGrad.addColorStop(0.3, "rgba(255, 255, 255, 0.08)");
-      sheenGrad.addColorStop(0.6, "rgba(0, 0, 0, 0)");
-      sheenGrad.addColorStop(1, "rgba(0, 0, 0, 0.4)");
-      ctx.fillStyle = sheenGrad;
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.restore();
-
-      // 7. Outer Glass Ring Orbit Border
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-      ctx.stroke();
-
-      animationFrameId = requestAnimationFrame(render);
-    };
-
-    render();
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [scrollRotation, isHovered]);
+  const handleSelectComplaint = (complaint: NonNullable<GlobeMarkerData["complaint"]>) => {
+    const found = markers.find((m) => m.id === complaint.id);
+    if (found) {
+      setSelectedMarker(found);
+      onMarkerSelect?.(found);
+    }
+  };
 
   return (
-    <div
-      className="relative flex items-center justify-center select-none"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Liquid background glow aura */}
-      <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-emerald-500/20 blur-3xl pointer-events-none -z-10 animate-pulse-slow" />
-      <div className="absolute w-60 h-60 rounded-full bg-emerald-400/10 blur-2xl pointer-events-none -z-10" />
+    <div className="relative flex flex-col items-center justify-center select-none w-full max-w-[540px]">
+      {/* Archival ambient glow halo */}
+      <div className="absolute w-80 h-80 sm:w-[460px] sm:h-[460px] rounded-full bg-[#B39A5A]/15 blur-3xl pointer-events-none -z-10" />
 
-      {/* Interactive Rotating Canvas Earth */}
-      <canvas
-        ref={canvasRef}
-        width={420}
-        height={420}
-        className="w-[280px] h-[280px] sm:w-[360px] sm:h-[360px] md:w-[400px] md:h-[400px] cursor-grab active:cursor-grabbing transition-transform duration-300"
-        title="Scroll down to rotate the Earth!"
-      />
+      {/* Cobe WebGL Rotating Globe with drag & dot click support */}
+      <div className="w-full aspect-square relative flex items-center justify-center">
+        <Globe
+          complaintMarkers={cobeMarkers}
+          onSelectComplaint={handleSelectComplaint}
+          className="relative inset-auto w-full h-full max-w-[500px]"
+        />
+      </div>
 
-      {/* Floating Glassmorphic Orbital Badge 1 (Top Left) */}
-      <div className="absolute -top-3 left-0 sm:-left-6 glass-panel rounded-2xl px-3.5 py-2 shadow-glass border border-white/20 animate-float-slow hidden xs:flex items-center gap-2">
-        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-        <div>
-          <div className="text-[10px] font-mono uppercase tracking-wider text-emerald-300 font-semibold">
-            Planetary Core Status
+      {/* Interactive Docket Marker Glass Preview Card */}
+      {selectedMarker && (
+        <div className="absolute top-4 sm:top-8 max-w-xs sm:max-w-sm w-full mx-auto px-4 z-20 animate-fade-in">
+          <div className="glass-panel-dark text-[#FFFCF5] p-4 rounded-[3px] border border-[#B39A5A]/60 shadow-docket-lg space-y-2">
+            <div className="flex items-center justify-between text-xs font-mono border-b border-[#B39A5A]/30 pb-1.5">
+              <span className="text-[#B39A5A] font-bold flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-[#B39A5A]" />
+                <span>{selectedMarker.caseNumber}</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedMarker(null)}
+                className="text-[#E2D9C5] hover:text-[#FFFCF5] p-0.5"
+                aria-label="Dismiss marker preview"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <div className="space-y-1">
+              <div className="text-xs font-serif font-bold text-[#FFFCF5] line-clamp-2">
+                {selectedMarker.title}
+              </div>
+              <div className="flex items-center gap-2 text-[11px] font-mono text-[#DCD4C3]">
+                <span>{getCountryFlag(selectedMarker.countryCode)} {selectedMarker.countryCode || "TERRAN BIOME"}</span>
+                <span>•</span>
+                <span className="uppercase text-[#B39A5A]">{selectedMarker.status}</span>
+              </div>
+            </div>
+
+            <div className="pt-1">
+              <Link
+                href={`/complaints/${selectedMarker.caseNumber}`}
+                className="btn-institutional-gold w-full text-center py-1.5 px-3 text-xs font-mono font-bold tracking-wider uppercase flex items-center justify-center gap-1.5 shadow"
+              >
+                <span>Open Formal Docket</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
-          <div className="text-xs font-bold text-white">4.5B Yrs in Early Access</div>
+        </div>
+      )}
+
+      {/* Top Left Institutional Telemetry Card */}
+      <div className="absolute -top-2 left-0 sm:-left-4 bg-[#FFFCF5] border border-[#DCD4C3] px-3.5 py-2 shadow-docket rounded-[2px] hidden xs:flex items-center gap-2.5 z-10">
+        <span className="w-2.5 h-2.5 rounded-full bg-[#244638] animate-ping" />
+        <div>
+          <div className="text-[9px] font-mono uppercase tracking-wider text-[#6D7065]">
+            GEOLOGICAL RECORD
+          </div>
+          <div className="text-xs font-serif font-bold text-[#142D24]">4.54 Billion Solar Cycles</div>
         </div>
       </div>
 
-      {/* Floating Glassmorphic Orbital Badge 2 (Bottom Right) */}
-      <div className="absolute -bottom-4 right-0 sm:-right-6 glass-panel rounded-2xl px-3.5 py-2 shadow-glass border border-white/20 animate-float-reverse hidden xs:flex items-center gap-2">
-        <Bug className="w-4 h-4 text-emerald-400" />
+      {/* Bottom Right Directorate Metric Card */}
+      <div className="absolute -bottom-4 right-0 sm:-right-4 bg-[#FFFCF5] border border-[#DCD4C3] px-3.5 py-2 shadow-docket rounded-[2px] hidden xs:flex items-center gap-2.5 z-10">
+        <Scale className="w-4 h-4 text-[#B39A5A]" />
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-wider text-emerald-300 font-semibold">
-            Mosquito Patch Status
+          <div className="text-[9px] font-mono uppercase tracking-wider text-[#6D7065]">
+            SUBSTRATE STABILITY
           </div>
-          <div className="text-xs font-bold text-white">Still Unpatched 🦟</div>
+          <div className="text-xs font-serif font-bold text-[#142D24]">Standard Terran Baseline</div>
         </div>
       </div>
 
-      {/* Floating Glassmorphic Orbital Badge 3 (Bottom Left) */}
-      <div className="absolute bottom-6 left-2 sm:-left-4 glass-panel rounded-xl px-2.5 py-1.5 shadow-glass border border-white/15 hidden sm:flex items-center gap-1.5 text-[11px] font-mono text-white/90">
-        <Compass className="w-3.5 h-3.5 text-emerald-400" />
-        <span>G = 9.81 m/s² (Non-negotiable)</span>
+      {/* Bottom Left Drag / Click Instruction Prompt */}
+      <div className="absolute -bottom-2 left-2 sm:-left-4 bg-[#FFFCF5]/90 border border-[#DCD4C3] px-3 py-1.5 shadow-docket rounded-[2px] hidden sm:flex items-center gap-2 text-[10px] font-mono text-[#444840] z-10">
+        <Compass className="w-3.5 h-3.5 text-[#244638]" />
+        <span>Drag to rotate • Click to inspect complaints</span>
       </div>
     </div>
   );

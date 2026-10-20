@@ -30,12 +30,6 @@ export function VoteButtons({
   const handleVote = async (targetVote: 1 | -1) => {
     if (isLoading) return;
 
-    // Save previous state for rollback
-    const prevScore = score;
-    const prevUpvotes = upvotes;
-    const prevDownvotes = downvotes;
-    const prevActive = activeVote;
-
     // Optimistic calculation
     let newScore = score;
     let newUp = upvotes;
@@ -98,13 +92,13 @@ export function VoteButtons({
         setActiveVote(data.userVote ?? nextActive);
       }
     } catch (err: unknown) {
-      setScore(prevScore);
-      setUpvotes(prevUpvotes);
-      setDownvotes(prevDownvotes);
-      setActiveVote(prevActive);
-      const msg = err instanceof Error ? err.message : "Vote registration failed.";
-      setErrorMessage(msg);
-      setTimeout(() => setErrorMessage(null), 4000);
+      // Revert optimistic updates on failure
+      setScore(score);
+      setUpvotes(upvotes);
+      setDownvotes(downvotes);
+      setActiveVote(activeVote);
+      setErrorMessage(err instanceof Error ? err.message : "Vote processing error.");
+      setTimeout(() => setErrorMessage(null), 3000);
     } finally {
       setIsLoading(false);
     }
@@ -114,57 +108,61 @@ export function VoteButtons({
 
   return (
     <div
-      className={`relative flex items-center ${
-        isVertical ? "flex-col space-y-1" : "flex-row space-x-2"
-      } backdrop-blur-md bg-white/5 rounded-2xl border border-white/15 p-1.5 shadow-glass-sm`}
+      className={`relative inline-flex items-center ${
+        isVertical
+          ? "flex-col bg-[#F7F3E9] p-1.5 rounded-[2px] border border-[#DCD4C3]"
+          : "flex-row gap-2 bg-[#F7F3E9] px-2 py-1 rounded-[2px] border border-[#DCD4C3]"
+      }`}
     >
-      {/* Endorse (Upvote) */}
+      {/* Upvote Button */}
       <button
         type="button"
         onClick={() => handleVote(1)}
         disabled={isLoading}
-        aria-label="Agree this is a bug"
-        className={`p-1.5 rounded-xl transition-all duration-200 ${
+        aria-label="Concur with grievance petition"
+        title="Concur with this grievance petition"
+        className={`p-1.5 rounded-lg transition-all duration-200 active:scale-90 hover:-translate-y-0.5 cursor-pointer ${
           activeVote === 1
-            ? "text-emerald-300 bg-emerald-500/30 border border-emerald-400/50 shadow-liquid-emerald"
-            : "text-white/60 hover:text-emerald-300 hover:bg-white/10"
+            ? "bg-[#244638] text-[#FFFCF5] shadow-sm"
+            : "text-[#6D7065] hover:text-[#244638] hover:bg-[#EFE9DA]"
         }`}
-        title="Agree / Fix this bug! (+1)"
       >
-        <ArrowBigUp className={`w-5 h-5 ${activeVote === 1 ? "fill-emerald-400" : ""}`} />
+        <ArrowBigUp className="w-5 h-5 fill-current" />
       </button>
 
-      {/* Net Score */}
+      {/* Net Score Display */}
       <div
-        className="font-mono text-xs font-bold text-white px-1 text-center min-w-[2.2rem]"
-        title={`Citizen votes: +${upvotes} agree / -${downvotes} disagree`}
+        className={`font-mono text-xs font-bold px-1 select-none transition-transform duration-200 ${
+          score > 0
+            ? "text-[#244638]"
+            : score < 0
+            ? "text-[#8B302B]"
+            : "text-[#6D7065]"
+        }`}
+        title={`Docket Score: ${score} (${upvotes} concurring, ${downvotes} dissenting)`}
       >
-        {isLoading ? (
-          <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto text-emerald-400" />
-        ) : (
-          (score > 0 ? `+${score}` : `${score}`)
-        )}
+        {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto text-[#6D7065]" /> : score}
       </div>
 
-      {/* Refute (Downvote) */}
+      {/* Downvote Button */}
       <button
         type="button"
         onClick={() => handleVote(-1)}
         disabled={isLoading}
-        aria-label="Disagree / Works as intended"
-        className={`p-1.5 rounded-xl transition-all duration-200 ${
+        aria-label="Dissent from grievance petition"
+        title="Dissent from this grievance petition"
+        className={`p-1.5 rounded-lg transition-all duration-200 active:scale-90 hover:translate-y-0.5 cursor-pointer ${
           activeVote === -1
-            ? "text-rose-300 bg-rose-500/30 border border-rose-400/50"
-            : "text-white/60 hover:text-rose-300 hover:bg-white/10"
+            ? "bg-[#8B302B] text-[#FFFCF5] shadow-sm"
+            : "text-[#6D7065] hover:text-[#8B302B] hover:bg-[#EFE9DA]"
         }`}
-        title="Works as intended / Disagree (-1)"
       >
-        <ArrowBigDown className={`w-5 h-5 ${activeVote === -1 ? "fill-rose-400" : ""}`} />
+        <ArrowBigDown className="w-5 h-5 fill-current" />
       </button>
 
-      {/* Rate limit warning */}
+      {/* Ephemeral Error Notification */}
       {errorMessage && (
-        <div className="absolute top-full left-0 z-30 mt-2 whitespace-nowrap rounded-xl bg-black/90 backdrop-blur-md border border-rose-500/50 text-[11px] text-white px-3 py-1.5 shadow-xl">
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 z-20 whitespace-nowrap bg-[#8B302B] text-white text-[10px] font-mono px-2 py-0.5 rounded-[2px] shadow-md pointer-events-none">
           {errorMessage}
         </div>
       )}

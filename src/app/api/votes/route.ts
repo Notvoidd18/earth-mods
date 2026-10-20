@@ -2,13 +2,55 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { complaints, votes } from "@/lib/db/schema";
 import { createVoteSchema } from "@/lib/validations/complaints";
-import { getOrCreateVoterToken } from "@/lib/security/auth";
+import { getOrCreateVoterToken, validateRequestOrigin } from "@/lib/security/auth";
 import { hashVoterToken, checkRateLimit } from "@/lib/security/token";
 import { eq, and, sql } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * GET /api/votes
+ * Returns list of complaint IDs that the current citizen has actively raised (voted = 1)
+ * based on their cryptographic voter token cookie.
+ */
+export async function GET(req: NextRequest) {
+  if (!db) {
+    return NextResponse.json({ error: "Database offline." }, { status: 503 });
+  }
+
+  try {
+    const rawVoterToken = await getOrCreateVoterToken();
+    const voterHash = hashVoterToken(rawVoterToken);
+
+    const userVotes = await db
+      .select({
+        complaintId: votes.complaintId,
+        voteType: votes.voteType,
+      })
+      .from(votes)
+      .where(and(eq(votes.voterHash, voterHash), eq(votes.voteType, 1)));
+
+    const raisedIds = userVotes.map((v) => v.complaintId);
+
+    return NextResponse.json(
+      { success: true, raisedIds },
+      {
+        headers: {
+          "Cache-Control": "no-store, max-age=0",
+        },
+      }
+    );
+  } catch (error) {
+    console.error("Error retrieving user votes:", error);
+    return NextResponse.json({ error: "Failed to read citizen votes." }, { status: 500 });
+  }
+}
+
 export async function POST(req: NextRequest) {
+  if (!validateRequestOrigin(req)) {
+    return NextResponse.json({ error: "Cross-origin vote rejected." }, { status: 403 });
+  }
+
   if (!db) {
     return NextResponse.json(
       { error: "Database offline. Voting operations unavailable." },

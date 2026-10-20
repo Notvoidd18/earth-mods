@@ -8,58 +8,58 @@ interface StatusBadgeProps {
 
 export function StatusBadge({ status, size = "md" }: StatusBadgeProps) {
   const isSm = size === "sm";
-  const sizeClasses = isSm ? "text-[11px] px-2.5 py-0.5" : "text-xs px-3 py-1";
+  const sizeClasses = isSm ? "text-[10px] px-2 py-0.5 tracking-wider" : "text-xs px-2.5 py-1 tracking-wider";
 
   switch (status) {
     case "CANONIZED":
       return (
         <span
-          className={`inline-flex items-center gap-1.5 font-mono font-bold uppercase rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/50 shadow-sm ${sizeClasses}`}
+          className={`inline-flex items-center gap-1 font-mono font-bold uppercase rounded-[2px] bg-[#FDF9EE] text-[#8F773B] border border-[#B39A5A] ${sizeClasses}`}
           title="Canonized into official planetary lore"
         >
-          <Sparkles className={isSm ? "w-3 h-3 text-emerald-400" : "w-3.5 h-3.5 text-emerald-400"} />
-          <span>Canonized</span>
+          <Sparkles className={isSm ? "w-2.5 h-2.5 text-[#B39A5A]" : "w-3 h-3 text-[#B39A5A]"} />
+          <span>CANONIZED</span>
         </span>
       );
     case "RESOLVED":
       return (
         <span
-          className={`inline-flex items-center gap-1.5 font-mono font-bold uppercase rounded-full bg-emerald-600/25 text-white border border-emerald-400/40 ${sizeClasses}`}
-          title="Official planetary patch deployed"
+          className={`inline-flex items-center gap-1 font-mono font-bold uppercase rounded-[2px] bg-[#EBF2EE] text-[#142D24] border border-[#3B5D4A] ${sizeClasses}`}
+          title="Official planetary ruling issued"
         >
-          <CheckCircle2 className={isSm ? "w-3 h-3 text-emerald-400" : "w-3.5 h-3.5 text-emerald-400"} />
-          <span>Resolved</span>
+          <CheckCircle2 className={isSm ? "w-2.5 h-2.5 text-[#244638]" : "w-3 h-3 text-[#244638]"} />
+          <span>RESOLVED</span>
         </span>
       );
     case "UNDER_INVESTIGATION":
       return (
         <span
-          className={`inline-flex items-center gap-1.5 font-mono font-semibold uppercase rounded-full bg-amber-500/20 text-amber-200 border border-amber-400/40 ${sizeClasses}`}
-          title="Being investigated by Earth Directorate devs"
+          className={`inline-flex items-center gap-1 font-mono font-bold uppercase rounded-[2px] bg-[#FFF8EB] text-[#8C5D00] border border-[#D9A74A] ${sizeClasses}`}
+          title="Under active Directorate inquiry"
         >
-          <Clock className={isSm ? "w-3 h-3 text-amber-300" : "w-3.5 h-3.5 text-amber-300"} />
-          <span>Investigating</span>
+          <Clock className={isSm ? "w-2.5 h-2.5 text-[#8C5D00]" : "w-3 h-3 text-[#8C5D00]"} />
+          <span>INQUIRY ACTIVE</span>
         </span>
       );
     case "DISMISSED":
       return (
         <span
-          className={`inline-flex items-center gap-1.5 font-mono font-semibold uppercase rounded-full bg-white/10 text-white/60 border border-white/20 ${sizeClasses}`}
-          title="Working as intended or user error"
+          className={`inline-flex items-center gap-1 font-mono font-medium uppercase rounded-[2px] bg-[#F5F2EB] text-[#6D7065] border border-[#DCD4C3] ${sizeClasses}`}
+          title="Dismissed: Working as planned or user error"
         >
-          <XCircle className={isSm ? "w-3 h-3" : "w-3.5 h-3.5"} />
-          <span>Dismissed</span>
+          <XCircle className={isSm ? "w-2.5 h-2.5" : "w-3 h-3"} />
+          <span>DISMISSED</span>
         </span>
       );
     case "PENDING_REVIEW":
     default:
       return (
         <span
-          className={`inline-flex items-center gap-1.5 font-mono font-semibold uppercase rounded-full bg-white/10 text-emerald-300 border border-emerald-400/30 ${sizeClasses}`}
-          title="Awaiting intake review"
+          className={`inline-flex items-center gap-1 font-mono font-medium uppercase rounded-[2px] bg-[#FFFFFF] text-[#244638] border border-[#DCD4C3] ${sizeClasses}`}
+          title="Awaiting intake evaluation"
         >
-          <AlertTriangle className={isSm ? "w-3 h-3 text-emerald-400" : "w-3.5 h-3.5 text-emerald-400"} />
-          <span>Pending Review</span>
+          <AlertTriangle className={isSm ? "w-2.5 h-2.5 text-[#3B5D4A]" : "w-3 h-3 text-[#3B5D4A]"} />
+          <span>PENDING REVIEW</span>
         </span>
       );
   }

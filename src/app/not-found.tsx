@@ -1,39 +1,41 @@
 import Link from "next/link";
-import { Globe2, ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, BookOpen } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="max-w-lg mx-auto py-20 text-center space-y-6">
-      <div className="w-16 h-16 rounded-2xl glass-panel flex items-center justify-center mx-auto text-emerald-400 border border-white/20 shadow-liquid-emerald">
-        <Globe2 className="w-8 h-8" />
+    <div className="min-h-[75vh] flex flex-col items-center justify-center py-16 px-4 text-center max-w-2xl mx-auto space-y-6">
+      <div className="w-16 h-16 rounded-2xl bg-[#EFE9DA] border border-[#DCD4C3] flex items-center justify-center mx-auto shadow-sm">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/planet.png" alt="Earth Mods Seal" className="w-12 h-12 object-contain" />
       </div>
 
-      <div className="space-y-2">
-        <span className="font-mono text-xs uppercase px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold">
-          404: TICKET NOT FOUND
-        </span>
-        <h1 className="text-3xl font-black text-white">
-          This Earth Bug Doesn&apos;t Exist
+      <div className="space-y-3">
+        <div className="inline-block px-3 py-1 rounded-full text-xs font-bold text-[#8B302B] bg-[#FBEBEA] border border-[#8B302B]/30 tracking-wider">
+          ARTICLE 404 • JURISDICTIONAL VOID
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#142D24] tracking-tight">
+          This page has no registered planetary jurisdiction.
         </h1>
-        <p className="text-xs sm:text-sm text-white/70 leading-relaxed">
-          The requested complaint docket was not found. It may have been patched, expunged by our moderators, or you mistyped the case ID.
+        <p className="text-base text-[#5e6b62] max-w-lg mx-auto leading-relaxed">
+          The Directorate cannot locate the requested record. Its existence remains unconfirmed.
         </p>
       </div>
 
-      <div className="pt-2 flex items-center justify-center gap-3">
+      <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
         <Link
           href="/"
-          className="liquid-btn inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl font-bold text-xs"
+          className="button button-green px-6 py-3 text-sm font-bold flex items-center justify-center gap-2 w-full sm:w-auto shadow-md"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Home</span>
+          <span>Return to Homepage</span>
         </Link>
+
         <Link
-          href="/submit"
-          className="liquid-btn-secondary inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-mono"
+          href="/#register"
+          className="button button-dark px-6 py-3 text-sm font-semibold flex items-center justify-center gap-2 w-full sm:w-auto"
         >
-          <Search className="w-4 h-4 text-emerald-400" />
-          <span>Report New Bug</span>
+          <BookOpen className="w-4 h-4" />
+          <span>Explore Public Register</span>
         </Link>
       </div>
     </div>
