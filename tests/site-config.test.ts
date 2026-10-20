@@ -67,9 +67,28 @@ describe("Production Site Configuration & Canonical Origin", () => {
       expect(canonicalDocket).toBe("https://earthmods.planetary.gov/complaints/EM-2026-0001");
     });
 
+    it("auto-detects RENDER_EXTERNAL_URL in production when SITE_URL is not set", () => {
+      (process.env as Record<string, string | undefined>).NODE_ENV = "production";
+      delete process.env.SITE_URL;
+      process.env.RENDER_EXTERNAL_URL = "https://earth-mods.onrender.com/";
+
+      const siteUrl = getSiteUrl();
+      expect(siteUrl).toBe("https://earth-mods.onrender.com");
+    });
+
+    it("falls back to onrender origin in production if no variables are set", () => {
+      (process.env as Record<string, string | undefined>).NODE_ENV = "production";
+      delete process.env.SITE_URL;
+      delete process.env.RENDER_EXTERNAL_URL;
+
+      const siteUrl = getSiteUrl();
+      expect(siteUrl).toBe("https://earth-mods.onrender.com");
+    });
+
     it("falls back gracefully to localhost in development environment", () => {
       (process.env as Record<string, string | undefined>).NODE_ENV = "development";
       delete process.env.SITE_URL;
+      delete process.env.RENDER_EXTERNAL_URL;
       process.env.PORT = "3000";
 
       const siteUrl = getSiteUrl();

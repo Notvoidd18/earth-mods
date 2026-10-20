@@ -89,33 +89,37 @@ export function validateSiteUrl(rawUrl?: string): SiteUrlValidation {
 /**
  * Resolves the canonical public origin.
  *
- * Rules:
- * - In production: Must be an absolute HTTPS URL and must NOT be localhost.
- *   If missing or invalid, throws in strict checks or falls back with a logged warning.
- * - In non-production (development / test): Defaults gracefully to local origin.
+ * Priority order:
+ * 1. Explicit SITE_URL environment variable.
+ * 2. Render auto-injected RENDER_EXTERNAL_URL (e.g. https://earth-mods.onrender.com).
+ * 3. Render auto-injected RENDER_EXTERNAL_HOSTNAME.
+ * 4. Vercel auto-injected VERCEL_URL.
+ * 5. Production safe default (https://earth-mods.onrender.com).
+ * 6. Non-production fallback (http://localhost:3000).
  */
 export function getSiteUrl(): string {
   const isProduction = process.env.NODE_ENV === "production";
-  const rawEnv = process.env.SITE_URL;
 
-  const validation = validateSiteUrl(rawEnv);
+  // Check candidate variables in order
+  const candidateUrl =
+    process.env.SITE_URL ||
+    process.env.RENDER_EXTERNAL_URL ||
+    (process.env.RENDER_EXTERNAL_HOSTNAME
+      ? `https://${process.env.RENDER_EXTERNAL_HOSTNAME}`
+      : undefined) ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined);
 
-  if (validation.isValid) {
-    if (isProduction) {
-      if (validation.isLocalhost) {
-        console.error(
-          "[CRITICAL SEO CONFIG ERROR] SITE_URL in production is configured as a localhost address:",
-          validation.url,
-          "— Production canonical URLs must be your verified public HTTPS domain."
-        );
-      } else if (!validation.isHttps) {
+  if (candidateUrl) {
+    const validation = validateSiteUrl(candidateUrl);
+    if (validation.isValid) {
+      if (isProduction && validation.isLocalhost) {
         console.warn(
-          "[SEO CONFIG WARNING] SITE_URL is not using HTTPS in production:",
+          "[SEO CONFIG WARNING] Canonical origin is configured as localhost in production:",
           validation.url
         );
       }
+      return validation.url;
     }
-    return validation.url;
   }
 
   // Non-production fallback (Local development or automated tests)
@@ -124,13 +128,8 @@ export function getSiteUrl(): string {
     return `http://localhost:${port}`;
   }
 
-  // Production with missing or invalid SITE_URL
-  console.error(
-    `[CRITICAL SEO CONFIG ERROR] Missing or invalid production SITE_URL: '${rawEnv}'. ${validation.error || ""} Please configure SITE_URL in your deployment dashboard.`
-  );
-
-  // Return a safe placeholder that indicates unconfigured status rather than pretending localhost is canonical production
-  return "https://unconfigured.earthmods.internal";
+  // Production fallback: default to the official onrender service origin
+  return "https://earth-mods.onrender.com";
 }
 
 /**

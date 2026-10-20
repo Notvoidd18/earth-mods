@@ -11,7 +11,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: SITE_URL
-        sync: false
+        value: https://earth-mods.onrender.com
         # Canonical custom domain or Render service URL (e.g. https://earth-mods.onrender.com)
       - key: SEO_INDEXING_ENABLED
         value: "false"
