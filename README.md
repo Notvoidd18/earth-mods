@@ -68,7 +68,7 @@ Create a `.env` file in the project root based on `.env.example`:
 ### 4.2 Installation
 ```powershell
 # Clone the repository
-git clone https://github.com/your-org/earth-mods.git
+git clone https://github.com/Notvoidd18/earth-mods.git
 cd "Planet Earth Complain Center"
 
 # Install dependencies
