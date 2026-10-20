@@ -3,6 +3,8 @@
 > **Official Fictional Planetary Government Complaints Department**  
 > *A full-stack, production-grade satirical governance portal for filing, reviewing, and adjudicating flaws in the terrestrial operating environment.*
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Notvoidd18/earth-mods)
+
 ---
 
 ## 1. Overview & Conceptual Model
